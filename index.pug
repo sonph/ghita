@@ -6,8 +6,9 @@ html(lang='en')
     meta(name='viewport' content='width=device-width, initial-scale=1')
 
     link(rel='stylesheet' type='text/css' href='/app.css') 
-    script(type='text/javascript' src='/app.js')
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
   body
     pre
-      h1 Hello world!
+      div#app.
+        {{ message }}
+    script(type='text/javascript' src='/__javascript__/app.js')

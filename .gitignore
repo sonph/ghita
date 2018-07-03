@@ -1,1 +1,3 @@
 *.html
+__javascript__/
+.mypy_cache/
