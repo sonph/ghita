@@ -43,20 +43,20 @@ html(lang='en')
         br
         br
         #fretboard
-          span   -                     3             5             7             9                    12
+          span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
           br
           - var string = 0;
           while string < STRINGS
-            - var fret = 0;
-            while fret < FRETS
-              //- For some reason .includes does not work. Probably has to do with JS version.
-              - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
-              span.note.show(class=`${class_marker}`) {{ fretboard.fb[#{string}][#{fret}] }}
-              if fret == 0
-                span.fret ||
-              else
-                span.fret |
-              - fret++
-            br
+            div.string
+              - var fret = 0;
+              while fret < FRETS
+                //- For some reason .includes does not work. Probably has to do with JS version.
+                - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
+                span.note(class=`${class_marker}`) {{ fretboard.fb[#{string}][#{fret}] }}
+                if fret == 0
+                  span.fret.bold ｜｜
+                else
+                  span.fret ｜
+                - fret++
             - string++
 

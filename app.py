@@ -45,6 +45,7 @@ class Fretboard(object):
             openNote, Tonal.Interval.fromSemitones(fret)))
         self.fb[string][fret] = sprintf('  %-2s  ', note)
     console.log(self.fb)
+    window.fb = self.fb
 
 class App(object):
   def __init__(self):

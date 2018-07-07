@@ -10,13 +10,21 @@
   color: #ddd;
 }
 #fretboard .note {
-  color: #333;
-  visibility: visible;
-  width: 5em;
+  color: #fff;
 }
 #fretboard .note.show {
-  visibility: visible;
+  color: #333;
 }
-#fretboard .fret-marker {
+#fretboard .note.fret-marker {
+  color: #eee;
   background-color: #eee;
+}
+#fretboard .note.fret-marker.show {
+  color: #333;
+  background-color: #eee;
+}
+
+/* Nut */
+#fretboard .fret.bold {
+  color: #333;
 }
