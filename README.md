@@ -13,7 +13,7 @@ Interactive comprehensive music theory assistance tool for guitarists.
 ### Dev environment
 
     pug --watch *.pug -o ./
-    transcrypt --dstat --build --map --nomin app.py
+    transcrypt --dstat --build --map --nomin *.py
     python3 -m http.server
 
 ### References
