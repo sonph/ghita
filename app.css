@@ -1,0 +1,6 @@
+.note {
+  color: #ddd;
+}
+.note.selected {
+  color: #333;
+}

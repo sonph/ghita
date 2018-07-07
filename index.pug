@@ -11,5 +11,10 @@ html(lang='en')
     script(type='text/javascript' src='/__javascript__/app.js')
   body
     pre
-      div#app.
-        {{ message }}
+      div#app {{ message }}
+        div.note(
+            v-bind:class="{ selected: selectedRoot.isCSelected }"
+            v-on:click="selectNote('C')") C
+        div.note(
+            v-bind:class="{ selected: selectedRoot.isDSelected }"
+            v-on:click="selectNote('D')") D
