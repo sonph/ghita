@@ -1,6 +1,7 @@
-.note {
+.selectable {
   color: #ddd;
+  margin-right: 2em;
 }
-.note.selected {
+.selectable.selected {
   color: #333;
 }

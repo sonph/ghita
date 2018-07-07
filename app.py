@@ -1,36 +1,32 @@
 import note
 
 
+def join(sep, items):
+  s = ''
+  for item in items:
+    s += sep + str(item)
+  return s
+
+
 class SelectedRoot(object):
   def __init__(self):
-    self.isCSelected = True
-    self.isDSelected = False
+    self.selectedRoot = 'A'
+    self.scale = self.getMajorScaleStr(self.selectedRoot)
 
-  def selectNote(self, note):
-    console.log('selected ' + note)
-    if note == 'C':
-      self.isCSelected = True
-      self.isDSelected = False
-    elif note == 'D':
-      self.isCSelected = False
-      self.isDSelected = True
+  def selectRoot(self, rootNote: str):
+    console.log('selected ' + rootNote)
+    self.selectedRoot = rootNote
+    self.scale = self.getMajorScaleStr(self.selectedRoot)
 
+  @staticmethod
+  def getMajorScaleStr(note) -> str:
+    root = teoria.note(note)
+    notes = root.scale('ionian').simple()
+    return join(' ', notes)
 
 class App(object):
   def __init__(self):
     self.selectedRoot = SelectedRoot()
-
-  def getMajorScale(self, note):
-    return note.scale('ionian').simple()
-
-  def notesToStr(self, notes):
-    return ' '.join(notes)
-
-  def getMessage(self):
-    message = ''
-    for n in note.ALL_NOTES:
-      message += self.notesToStr(self.getMajorScale(n)) + '\n'
-    return message
 
   def start(self) -> None:
     console.log('python start()')
@@ -40,11 +36,7 @@ class App(object):
     window.app = __new__(Vue({
       'el': '#app',
       'data': {
-        'message': self.getMessage(),
         'selectedRoot': self.selectedRoot
-      },
-      'methods': {
-        'selectNote': self.selectedRoot.selectNote,
       },
     }))
 
