@@ -18,11 +18,12 @@ class Scale(object):
   def update(self):
     console.log('update')
     notes = Tonal.Scale.notes(self.selectedRoot + ' ' + self.selectedType)
-    # Simplify flats to sharps.
-    self.notes = [Tonal.Note.enharmonic(note) if note.endsWith('b') else note for note in notes]
-    window.notes = self.notes
-    console.log('notes ' + self.notes)
-
+    self.notes = []
+    # Convert flats to sharps and simplify.
+    for note in notes:
+      note = Tonal.Note.simplify(note)
+      self.notes.append(
+        Tonal.Note.enharmonic(note) if note.endsWith('b') else note)
 
 class App(object):
   def __init__(self):
