@@ -1,4 +1,5 @@
 - var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+- var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian']
 
 doctype html
 html(lang='en')
@@ -14,11 +15,20 @@ html(lang='en')
   body
     pre
       #app
-        #scale {{ selectedRoot.scale }}
         #scaleSelector
           #root
-          each val in NOTES
-            span.selectable(
-                v-bind:class="{ selected: selectedRoot.selectedRoot == '" + val + "'}"
-                v-on:click="selectedRoot.selectRoot('" + val + "')"
-            )= val
+            each val in NOTES
+              span.selectable(
+                  v-bind:class="{ selected: scale.selectedRoot == '" + val + "'}"
+                  v-on:click="scale.selectRoot('" + val + "')"
+              )= val
+          #scale
+            each val in SCALES
+              span.selectable(
+                  v-bind:class="{ selected: scale.selectedType == '" + val + "'}"
+                  v-on:click="scale.selectType('" + val + "')"
+              )= val
+
+        br
+        br
+        #scaleNotes {{ scale.notes }}

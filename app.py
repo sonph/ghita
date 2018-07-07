@@ -1,6 +1,3 @@
-import note
-
-
 def join(sep, items):
   s = ''
   for item in items:
@@ -8,25 +5,31 @@ def join(sep, items):
   return s
 
 
-class SelectedRoot(object):
+class Scale(object):
   def __init__(self):
-    self.selectedRoot = 'A'
-    self.scale = self.getMajorScaleStr(self.selectedRoot)
+    self.selectedRoot = 'C'
+    self.selectedType = 'ionian'
+    self.notes = self.getNotesStr(self.selectedRoot, self.selectedType)
 
   def selectRoot(self, rootNote: str):
-    console.log('selected ' + rootNote)
+    console.log('selected root ' + rootNote)
     self.selectedRoot = rootNote
-    self.scale = self.getMajorScaleStr(self.selectedRoot)
+    self.notes = self.getNotesStr(self.selectedRoot, self.selectedType)
+
+  def selectType(self, scaleType: str):
+    console.log('selected scale type ' + scaleType)
+    self.selectedType = scaleType
+    self.notes = self.getNotesStr(self.selectedRoot, self.selectedType)
 
   @staticmethod
-  def getMajorScaleStr(note) -> str:
-    root = teoria.note(note)
-    notes = root.scale('ionian').simple()
+  def getNotesStr(root, scaleType) -> str:
+    root = teoria.note(root)
+    notes = root.scale(scaleType).simple()
     return join(' ', notes)
 
 class App(object):
   def __init__(self):
-    self.selectedRoot = SelectedRoot()
+    self.scale = Scale()
 
   def start(self) -> None:
     console.log('python start()')
@@ -36,7 +39,7 @@ class App(object):
     window.app = __new__(Vue({
       'el': '#app',
       'data': {
-        'selectedRoot': self.selectedRoot
+        'scale': self.scale
       },
     }))
 
