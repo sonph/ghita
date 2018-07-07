@@ -1,0 +1,7 @@
+.selectable {
+  color: #ddd;
+  margin-right: 2em;
+}
+.selectable.selected {
+  color: #333;
+}

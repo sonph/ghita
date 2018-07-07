@@ -1,3 +1,5 @@
+- var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+
 doctype html
 html(lang='en')
   head
@@ -7,8 +9,16 @@ html(lang='en')
 
     link(rel='stylesheet' type='text/css' href='/app.css') 
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
+    script(type='text/javascript' src='/teoria.js')
+    script(type='text/javascript' src='/__javascript__/app.js')
   body
     pre
-      div#app.
-        {{ message }}
-    script(type='text/javascript' src='/__javascript__/app.js')
+      #app
+        #scale {{ selectedRoot.scale }}
+        #scaleSelector
+          #root
+          each val in NOTES
+            span.selectable(
+                v-bind:class="{ selected: selectedRoot.selectedRoot == '" + val + "'}"
+                v-on:click="selectedRoot.selectRoot('" + val + "')"
+            )= val
