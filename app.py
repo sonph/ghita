@@ -1,3 +1,5 @@
+import note
+
 class App:
   def __init__(self):
     pass
@@ -6,10 +8,16 @@ class App:
     console.log('python start()')
     self.initVue()
 
-  def getMessage(self) -> str:
-    return '{0}'.format('Hello world!')
+  def getMajorScale(self, note):
+    return note.scale('ionian').simple()
+
+  def notesToStr(self, notes):
+    return ' '.join(notes)
 
   def initVue(self) -> None:
-    app = __new__(Vue({'el': '#app', 'data': {'message': self.getMessage()}}))
+    message = ''
+    for n in note.ALL_NOTES:
+      message += self.notesToStr(self.getMajorScale(n)) + '\n'
+    app = __new__(Vue({'el': '#app', 'data': {'message': message}}))
 
 window.addEventListener('load', lambda: App().start())
