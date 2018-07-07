@@ -1,3 +1,10 @@
+def normalizeNote(note):
+  note = Tonal.Note.simplify(note)
+  if note.endswith('b'):
+    return Tonal.Note.enharmonic(note)
+  return note
+
+
 class Scale(object):
   def __init__(self):
     self.selectedRoot = 'A'
@@ -25,9 +32,24 @@ class Scale(object):
       self.notes.append(
         Tonal.Note.enharmonic(note) if note.endsWith('b') else note)
 
+
+class Fretboard(object):
+  def __init__(self):
+    self.fb = {}
+    openNotes = ['E', 'B', 'G', 'D', 'A', 'E']
+    for string in range(6):
+      openNote = openNotes[string]
+      self.fb[string] = {}
+      for fret in range(22):
+        note = normalizeNote(Tonal.Distance.transpose(
+            openNote, Tonal.Interval.fromSemitones(fret)))
+        self.fb[string][fret] = sprintf('  %-2s  ', note)
+    console.log(self.fb)
+
 class App(object):
   def __init__(self):
     self.scale = Scale()
+    self.fretboard = Fretboard()
 
   def start(self) -> None:
     console.log('python start()')
@@ -37,7 +59,8 @@ class App(object):
     window.app = __new__(Vue({
       'el': '#app',
       'data': {
-        'scale': self.scale
+        'scale': self.scale,
+        'fretboard': self.fretboard,
       },
     }))
 

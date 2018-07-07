@@ -5,3 +5,18 @@
 .selectable.selected {
   color: #333;
 }
+
+#fretboard .fret {
+  color: #ddd;
+}
+#fretboard .note {
+  color: #333;
+  visibility: visible;
+  width: 5em;
+}
+#fretboard .note.show {
+  visibility: visible;
+}
+#fretboard .fret-marker {
+  background-color: #eee;
+}
