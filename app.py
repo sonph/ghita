@@ -1,32 +1,32 @@
-import note
-
-
-def join(sep, items):
-  s = ''
-  for item in items:
-    s += sep + str(item)
-  return s
-
-
-class SelectedRoot(object):
+class Scale(object):
   def __init__(self):
     self.selectedRoot = 'A'
-    self.scale = self.getMajorScaleStr(self.selectedRoot)
+    self.selectedType = 'lydian'
+    self.notes = []
+    self.update()
 
   def selectRoot(self, rootNote: str):
-    console.log('selected ' + rootNote)
+    console.log('selected root ' + rootNote)
     self.selectedRoot = rootNote
-    self.scale = self.getMajorScaleStr(self.selectedRoot)
+    self.update()
 
-  @staticmethod
-  def getMajorScaleStr(note) -> str:
-    root = teoria.note(note)
-    notes = root.scale('ionian').simple()
-    return join(' ', notes)
+  def selectType(self, scaleType: str):
+    console.log('selected scale type ' + scaleType)
+    self.selectedType = scaleType
+    self.update()
+
+  def update(self):
+    console.log('update')
+    notes = Tonal.Scale.notes(self.selectedRoot + ' ' + self.selectedType)
+    # Simplify flats to sharps.
+    self.notes = [Tonal.Note.enharmonic(note) if note.endsWith('b') else note for note in notes]
+    window.notes = self.notes
+    console.log('notes ' + self.notes)
+
 
 class App(object):
   def __init__(self):
-    self.selectedRoot = SelectedRoot()
+    self.scale = Scale()
 
   def start(self) -> None:
     console.log('python start()')
@@ -36,7 +36,7 @@ class App(object):
     window.app = __new__(Vue({
       'el': '#app',
       'data': {
-        'selectedRoot': self.selectedRoot
+        'scale': self.scale
       },
     }))
 

@@ -1,4 +1,5 @@
 - var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+- var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
 
 doctype html
 html(lang='en')
@@ -9,16 +10,29 @@ html(lang='en')
 
     link(rel='stylesheet' type='text/css' href='/app.css') 
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
-    script(type='text/javascript' src='/teoria.js')
+    script(type='text/javascript' src='/tonal.min.js')
     script(type='text/javascript' src='/__javascript__/app.js')
   body
     pre
       #app
-        #scale {{ selectedRoot.scale }}
         #scaleSelector
           #root
+            each val in NOTES
+              span.selectable(
+                  v-bind:class="{ selected: scale.selectedRoot == '" + val + "'}"
+                  v-on:click="scale.selectRoot('" + val + "')"
+              )= val
+          #scale
+            each val in SCALES
+              span.selectable(
+                  v-bind:class="{ selected: scale.selectedType == '" + val + "'}"
+                  v-on:click="scale.selectType('" + val + "')"
+              )= val
+
+        br
+        br
+
+        #scale
           each val in NOTES
             span.selectable(
-                v-bind:class="{ selected: selectedRoot.selectedRoot == '" + val + "'}"
-                v-on:click="selectedRoot.selectRoot('" + val + "')"
-            )= val
+                v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
