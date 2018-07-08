@@ -1,4 +1,5 @@
 ALL_NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
 
 from typing import List, Any
 
@@ -9,7 +10,6 @@ class Note:
       note: str, string representation
       intervalToTonic: str, interval to tonic, if this note is in a scale
       selected: bool, this note is selected
-      fretStr: str, string to show on fretboard
   """
   def __init__(self,
       note: str,
@@ -32,7 +32,7 @@ class Note:
 
   def update(self) -> None:
     """Updates all derived attributes, such as those used in Vue."""
-    self.fretStr = sprintf('  %-2s  ', self.note)
+    pass
 
   @classmethod
   def normalize(self, note: str) -> str:
@@ -88,7 +88,23 @@ class Scale:
       self.all_notes.append(Note(note_str, interval, selected))
 
 
-class Fretboard(object):
+class Fret:
+  """Represents a fret.
+
+  Attributes:
+    note: Note, note
+    marker: bool, if this has a fret marker
+    fretStr: str, string to show on fretboard
+  """
+  def __init__(self,
+      note: Note,
+      marker: bool) -> None:
+    self.note = note
+    self.marker = marker
+    self.fretStr = sprintf('  %-2s  ', self.note.note)
+
+
+class Fretboard:
   """Represents a fretboard.
 
   Attributes:
@@ -102,7 +118,8 @@ class Fretboard(object):
       for fret in range(22):
         note = Note.normalize(Tonal.Distance.transpose(
             openNote, Tonal.Interval.fromSemitones(fret)))
-        self.frets[string][fret] = Note(note)
+        self.frets[string][fret] = Fret(
+            Note(note), FRET_MARKERS.indexOf(fret) != -1)
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
@@ -115,12 +132,12 @@ class Fretboard(object):
       for fret in range(22):
         # Testing a string in a list of strings.
         # Try testing a Note object in a list of Notes instead.
-        index = notes_str.indexOf(self.frets[string][fret].note)
+        index = notes_str.indexOf(self.frets[string][fret].note.note)
         if index != -1:
-          self.frets[string][fret].select().interval(
+          self.frets[string][fret].note.select().interval(
               scale.notes[index].intervalToTonic)
         else:
-          self.frets[string][fret].select(False).interval(None)
+          self.frets[string][fret].note.select(False).interval(None)
 
 
 class App(object):

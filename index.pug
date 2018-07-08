@@ -3,7 +3,6 @@
 - var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
 - var STRINGS = 6;
 - var FRETS = 22;
-- var FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19];
 
 doctype html
 html(lang='en')
@@ -65,7 +64,7 @@ html(lang='en')
         br
         br
 
-        //- h3 Fretboard viz
+        h3 Fretboard viz
         #fretboard
           span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
           br
@@ -74,11 +73,11 @@ html(lang='en')
             div.string
               - var fret = 0;
               while fret < FRETS
-                //- For some reason .includes does not work. Probably has to do with JS version.
-                - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
-                span.note(
-                    class=`${class_marker}`
-                    v-bind:class="{ show: fretboard.frets[" + string + "][" + fret + "].selected, root: fretboard.frets[" + string + "][" + fret + "].intervalToTonic == '1P' }"
+                span.note(v-bind:class="{ " +
+                    "show: fretboard.frets[" + string + "][" + fret + "].note.selected, " +
+                    "root: fretboard.frets[" + string + "][" + fret + "].note.intervalToTonic == '1P', " +
+                    "fretmarker: fretboard.frets[" + string + "][" + fret + "].marker, " +
+                    "}"
                 ) {{ fretboard.frets[#{string}][#{fret}].fretStr }}
                 if fret == 0
                   span.fret.bold ｜｜
