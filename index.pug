@@ -1,3 +1,4 @@
+//- TODO: Instead of using Pug's iteration, use Vue's iteration instead.
 - var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 - var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
 - var STRINGS = 6;
@@ -27,16 +28,16 @@ html(lang='en')
               tr
                 if i < NOTES.length
                   td.selectable(
-                      v-bind:class="{ selected: scale.selectedRoot == '" + NOTES[i] + "'}"
-                      v-on:click="scale.selectRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
+                      v-bind:class="{ selected: scale.root.note == '" + NOTES[i] + "'}"
+                      v-on:click="scale.setRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
                   )= NOTES[i]
                 else
                   td
                 td.selectable(
-                    v-bind:class="{ selected: scale.selectedType == '" + SCALES[i] + "'}"
-                    v-on:click="scale.selectType('" + SCALES[i] + "'); fretboard.showScale(scale)"
+                    v-bind:class="{ selected: scale.scale == '" + SCALES[i] + "'}"
+                    v-on:click="scale.setScale('" + SCALES[i] + "'); fretboard.showScale(scale)"
                 )= SCALES[i]
-              - i++
+              - i++;
 
 
         br
@@ -46,21 +47,25 @@ html(lang='en')
         #scale
           table
             tr
-              each val in NOTES
+              //- Vue iterates scale.all_notes
+              - var i = 0;
+              while i < 12
                 td.selectable(
-                    v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
+                    v-bind:class="{ selected: scale.all_notes[" + i + "].selected }"
+                ) {{ scale.all_notes[#{i}].note }}
+                - i++;
             tr
-            - var i = 0
-            while i < 12
-              td.selectable(
-                  v-bind:class="{ selected: scale.intervals[" + i + "].isSelected }"
-              ) {{ scale.intervals[#{i}].intervalName }}
-              - i++
+              - var i = 0;
+              while i < 12
+                td.selectable(
+                    v-bind:class="{ selected: scale.all_notes[" + i + "].selected }"
+                ) {{ scale.all_notes[#{i}].intervalToTonic }}
+                - i++;
 
         br
         br
 
-        h3 Fretboard viz
+        //- h3 Fretboard viz
         #fretboard
           span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
           br
@@ -73,11 +78,11 @@ html(lang='en')
                 - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
                 span.note(
                     class=`${class_marker}`
-                    v-bind:class="{ show: fretboard.fb[" + string + "][" + fret + "].show, root: fretboard.fb[" + string + "][" + fret + "].isRoot }"
-                ) {{ fretboard.fb[#{string}][#{fret}].displayStr }}
+                    v-bind:class="{ show: fretboard.frets[" + string + "][" + fret + "].selected, root: fretboard.frets[" + string + "][" + fret + "].intervalToTonic == '1P' }"
+                ) {{ fretboard.frets[#{string}][#{fret}].fretStr }}
                 if fret == 0
                   span.fret.bold ｜｜
                 else
                   span.fret ｜
-                - fret++
-            - string++
+                - fret++;
+            - string++;
