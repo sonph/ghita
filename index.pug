@@ -26,13 +26,13 @@ html(lang='en')
             while i < SCALES.length
               tr
                 if i < NOTES.length
-                  td.selectable(
+                  td.selectable.clickable(
                       v-bind:class="{ selected: scale.selectedRoot == '" + NOTES[i] + "'}"
                       v-on:click="scale.selectRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
                   )= NOTES[i]
                 else
                   td
-                td.selectable(
+                td.selectable.clickable(
                     v-bind:class="{ selected: scale.selectedType == '" + SCALES[i] + "'}"
                     v-on:click="scale.selectType('" + SCALES[i] + "'); fretboard.showScale(scale)"
                 )= SCALES[i]

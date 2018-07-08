@@ -1,8 +1,12 @@
 .selectable {
   color: #ddd;
 }
-.selectable.selected {
+.selectable.selected, .clickable.selected:hover {
   color: #6200EE;
+}
+
+.clickable:hover {
+  color: #03DAC6;
 }
 
 #scaleSelector tr td:first-child {
