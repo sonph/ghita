@@ -33,6 +33,13 @@ class Scale(object):
         Tonal.Note.enharmonic(note) if note.endsWith('b') else note)
 
 
+class Fret(object):
+  def __init__(self, displayStr, note):
+    self.displayStr = displayStr
+    self.note = note
+    self.show = False
+    self.isRoot = False
+
 class Fretboard(object):
   def __init__(self):
     self.fb = {}
@@ -43,9 +50,17 @@ class Fretboard(object):
       for fret in range(22):
         note = normalizeNote(Tonal.Distance.transpose(
             openNote, Tonal.Interval.fromSemitones(fret)))
-        self.fb[string][fret] = sprintf('  %-2s  ', note)
+        self.fb[string][fret] = Fret(sprintf('  %-2s  ', note), note)
     console.log(self.fb)
     window.fb = self.fb
+
+  def showScale(self, scale: Scale):
+    notes = scale.notes
+    for string in range(6):
+      for fret in range(22):
+        index = notes.indexOf(self.fb[string][fret].note)
+        self.fb[string][fret].show = (index != -1)
+        self.fb[string][fret].isRoot = (index == 0)
 
 class App(object):
   def __init__(self):

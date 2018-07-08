@@ -3,17 +3,21 @@
   margin-right: 2em;
 }
 .selectable.selected {
-  color: #333;
+  color: #6200EE;
 }
 
 #fretboard .fret {
-  color: #ddd;
+  color: #eee;
 }
 #fretboard .note {
   color: #fff;
 }
 #fretboard .note.show {
   color: #333;
+}
+#fretboard .note.show.root {
+  color: #6200EE;
+  font-weight: bold;
 }
 #fretboard .note.fret-marker {
   color: #eee;

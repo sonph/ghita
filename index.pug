@@ -24,13 +24,13 @@ html(lang='en')
             each val in NOTES
               span.selectable(
                   v-bind:class="{ selected: scale.selectedRoot == '" + val + "'}"
-                  v-on:click="scale.selectRoot('" + val + "')"
+                  v-on:click="scale.selectRoot('" + val + "'); fretboard.showScale(scale)"
               )= val
           #scale
             each val in SCALES
               span.selectable(
                   v-bind:class="{ selected: scale.selectedType == '" + val + "'}"
-                  v-on:click="scale.selectType('" + val + "')"
+                  v-on:click="scale.selectType('" + val + "'); fretboard.showScale(scale)"
               )= val
 
         br
@@ -52,7 +52,10 @@ html(lang='en')
               while fret < FRETS
                 //- For some reason .includes does not work. Probably has to do with JS version.
                 - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
-                span.note(class=`${class_marker}`) {{ fretboard.fb[#{string}][#{fret}] }}
+                span.note(
+                    class=`${class_marker}`
+                    v-bind:class="{ show: fretboard.fb[" + string + "][" + fret + "].show, root: fretboard.fb[" + string + "][" + fret + "].isRoot }"
+                ) {{ fretboard.fb[#{string}][#{fret}].displayStr }}
                 if fret == 0
                   span.fret.bold ｜｜
                 else
