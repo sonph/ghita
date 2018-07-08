@@ -3,5 +3,32 @@
   margin-right: 2em;
 }
 .selectable.selected {
+  color: #6200EE;
+}
+
+#fretboard .fret {
+  color: #eee;
+}
+#fretboard .note {
+  color: #fff;
+}
+#fretboard .note.show {
+  color: #333;
+}
+#fretboard .note.show.root {
+  color: #6200EE;
+  font-weight: bold;
+}
+#fretboard .note.fret-marker {
+  color: #eee;
+  background-color: #eee;
+}
+#fretboard .note.fret-marker.show {
+  color: #333;
+  background-color: #eee;
+}
+
+/* Nut */
+#fretboard .fret.bold {
   color: #333;
 }

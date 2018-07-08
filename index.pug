@@ -1,5 +1,8 @@
 - var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 - var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
+- var STRINGS = 6;
+- var FRETS = 22;
+- var FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19];
 
 doctype html
 html(lang='en')
@@ -11,6 +14,7 @@ html(lang='en')
     link(rel='stylesheet' type='text/css' href='./app.css')
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
     script(type='text/javascript' src='./tonal.min.js')
+    script(type='text/javascript' src='./sprintf.js')
     script(type='text/javascript' src='./__javascript__/app.js')
   body
     pre
@@ -20,19 +24,42 @@ html(lang='en')
             each val in NOTES
               span.selectable(
                   v-bind:class="{ selected: scale.selectedRoot == '" + val + "'}"
-                  v-on:click="scale.selectRoot('" + val + "')"
+                  v-on:click="scale.selectRoot('" + val + "'); fretboard.showScale(scale)"
               )= val
           #scale
             each val in SCALES
               span.selectable(
                   v-bind:class="{ selected: scale.selectedType == '" + val + "'}"
-                  v-on:click="scale.selectType('" + val + "')"
+                  v-on:click="scale.selectType('" + val + "'); fretboard.showScale(scale)"
               )= val
 
         br
         br
-
         #scale
           each val in NOTES
             span.selectable(
                 v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
+
+        br
+        br
+        #fretboard
+          span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
+          br
+          - var string = 0;
+          while string < STRINGS
+            div.string
+              - var fret = 0;
+              while fret < FRETS
+                //- For some reason .includes does not work. Probably has to do with JS version.
+                - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
+                span.note(
+                    class=`${class_marker}`
+                    v-bind:class="{ show: fretboard.fb[" + string + "][" + fret + "].show, root: fretboard.fb[" + string + "][" + fret + "].isRoot }"
+                ) {{ fretboard.fb[#{string}][#{fret}].displayStr }}
+                if fret == 0
+                  span.fret.bold ｜｜
+                else
+                  span.fret ｜
+                - fret++
+            - string++
+
