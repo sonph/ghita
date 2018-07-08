@@ -5,11 +5,18 @@ def normalizeNote(note):
   return note
 
 
+class Interval(object):
+  def __init__(self, intervalName, isSelected):
+    self.intervalName = sprintf('%s', intervalName)
+    self.isSelected = isSelected
+
+
 class Scale(object):
   def __init__(self):
     self.selectedRoot = 'A'
     self.selectedType = 'lydian'
     self.notes = []
+    self.intervals = []
     self.update()
 
   def selectRoot(self, rootNote: str):
@@ -26,11 +33,18 @@ class Scale(object):
     console.log('update')
     notes = Tonal.Scale.notes(self.selectedRoot + ' ' + self.selectedType)
     self.notes = []
-    # Convert flats to sharps and simplify.
     for note in notes:
+      # Convert flats to sharps and simplify.
       note = Tonal.Note.simplify(note)
       self.notes.append(
-        Tonal.Note.enharmonic(note) if note.endsWith('b') else note)
+          Tonal.Note.enharmonic(note) if note.endsWith('b') else note)
+
+    self.intervals = []
+    for note in ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']:
+      self.intervals.append(Interval(
+          Tonal.Distance.interval(self.selectedRoot, note),
+          notes.includes(note)))
+    window.intervals = self.intervals
 
 
 class Fret(object):
@@ -39,6 +53,7 @@ class Fret(object):
     self.note = note
     self.show = False
     self.isRoot = False
+
 
 class Fretboard(object):
   def __init__(self):
@@ -61,6 +76,7 @@ class Fretboard(object):
         index = notes.indexOf(self.fb[string][fret].note)
         self.fb[string][fret].show = (index != -1)
         self.fb[string][fret].isRoot = (index == 0)
+
 
 class App(object):
   def __init__(self):

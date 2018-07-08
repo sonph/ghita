@@ -1,9 +1,16 @@
 .selectable {
   color: #ddd;
-  margin-right: 2em;
 }
 .selectable.selected {
   color: #6200EE;
+}
+
+#scaleSelector tr td:first-child {
+  padding-right: 2em;
+}
+
+#scale tr td {
+  padding-right: 1em;
 }
 
 #fretboard .fret {
@@ -25,7 +32,9 @@
 }
 #fretboard .note.fret-marker.show {
   color: #333;
-  background-color: #eee;
+}
+#fretboard .note.fret-marker.show.root {
+  color: #6200EE;
 }
 
 /* Nut */

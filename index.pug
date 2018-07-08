@@ -19,29 +19,48 @@ html(lang='en')
   body
     pre
       #app
+        h3 Scale
         #scaleSelector
-          #root
-            each val in NOTES
-              span.selectable(
-                  v-bind:class="{ selected: scale.selectedRoot == '" + val + "'}"
-                  v-on:click="scale.selectRoot('" + val + "'); fretboard.showScale(scale)"
-              )= val
-          #scale
-            each val in SCALES
-              span.selectable(
-                  v-bind:class="{ selected: scale.selectedType == '" + val + "'}"
-                  v-on:click="scale.selectType('" + val + "'); fretboard.showScale(scale)"
-              )= val
+          table
+            - var i = 0;
+            while i < SCALES.length
+              tr
+                if i < NOTES.length
+                  td.selectable(
+                      v-bind:class="{ selected: scale.selectedRoot == '" + NOTES[i] + "'}"
+                      v-on:click="scale.selectRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
+                  )= NOTES[i]
+                else
+                  td
+                td.selectable(
+                    v-bind:class="{ selected: scale.selectedType == '" + SCALES[i] + "'}"
+                    v-on:click="scale.selectType('" + SCALES[i] + "'); fretboard.showScale(scale)"
+                )= SCALES[i]
+              - i++
+
 
         br
         br
+
+        h3 Notes
         #scale
-          each val in NOTES
-            span.selectable(
-                v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
+          table
+            tr
+              each val in NOTES
+                td.selectable(
+                    v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
+            tr
+            - var i = 0
+            while i < 12
+              td.selectable(
+                  v-bind:class="{ selected: scale.intervals[" + i + "].isSelected }"
+              ) {{ scale.intervals[#{i}].intervalName }}
+              - i++
 
         br
         br
+
+        h3 Fretboard viz
         #fretboard
           span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
           br
@@ -62,4 +81,3 @@ html(lang='en')
                   span.fret ｜
                 - fret++
             - string++
-
