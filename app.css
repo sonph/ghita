@@ -17,6 +17,12 @@
   padding-right: 1em;
 }
 
+#fretboard table {
+  border-spacing: 0px 3px;
+  table-layout: fixed;
+  width: 1600px;
+}
+
 #fretboard table td {
   border: none;
   text-align: center;
@@ -32,10 +38,6 @@
   padding-bottom: 0.2em;
   margin: 2px;
   color: #fff;
-
-  /* TODO: Prevents cell resizing when switching between notes with/without
-  accidentals */
-  min-width: 5em;
 }
 
 #fretboard table td sub.interval {
