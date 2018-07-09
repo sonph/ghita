@@ -26,14 +26,14 @@
   color: #6200EE;
   font-weight: bold;
 }
-#fretboard .note.fret-marker {
+#fretboard .note.fretmarker {
   color: #eee;
   background-color: #eee;
 }
-#fretboard .note.fret-marker.show {
+#fretboard .note.fretmarker.show {
   color: #333;
 }
-#fretboard .note.fret-marker.show.root {
+#fretboard .note.fretmarker.show.root {
   color: #6200EE;
 }
 

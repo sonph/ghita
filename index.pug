@@ -1,8 +1,5 @@
-- var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-- var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
 - var STRINGS = 6;
 - var FRETS = 22;
-- var FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19];
 
 doctype html
 html(lang='en')
@@ -22,22 +19,19 @@ html(lang='en')
         h3 Scale
         #scaleSelector
           table
-            - var i = 0;
-            while i < SCALES.length
-              tr
-                if i < NOTES.length
-                  td.selectable(
-                      v-bind:class="{ selected: scale.selectedRoot == '" + NOTES[i] + "'}"
-                      v-on:click="scale.selectRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
-                  )= NOTES[i]
-                else
-                  td
-                td.selectable(
-                    v-bind:class="{ selected: scale.selectedType == '" + SCALES[i] + "'}"
-                    v-on:click="scale.selectType('" + SCALES[i] + "'); fretboard.showScale(scale)"
-                )= SCALES[i]
-              - i++
-
+            tr(v-for="noteScale in ZIP_NOTES_SCALES")
+              //- Notes in column 1
+              td.selectable(v-if="noteScale[0]"
+                  v-bind:class="{ selected: scale.root.note == noteScale[0]}"
+                  v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
+              ) {{ noteScale[0] }}
+              td(v-else)
+              //- Scales in column 2
+              td.selectable(v-if="noteScale[1]"
+                  v-bind:class="{ selected: scale.scale == noteScale[1]}"
+                  v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
+              ) {{ noteScale[1] }}
+              td(v-else)
 
         br
         br
@@ -46,20 +40,20 @@ html(lang='en')
         #scale
           table
             tr
-              each val in NOTES
-                td.selectable(
-                    v-bind:class="{ selected: scale.notes.includes('" + val + "') }")= val
-            tr
-            - var i = 0
-            while i < 12
               td.selectable(
-                  v-bind:class="{ selected: scale.intervals[" + i + "].isSelected }"
-              ) {{ scale.intervals[#{i}].intervalName }}
-              - i++
+                  v-for="note in scale.all_notes"
+                  v-bind:class="{ selected: note.selected, }"
+              ) {{ note.note }}
+            tr
+              td.selectable(
+                  v-for="note in scale.all_notes"
+                  v-bind:class="{ selected: note.selected, }"
+              ) {{ note.intervalToTonic }}
 
         br
         br
 
+        //- TODO: convert to table and vue iteration
         h3 Fretboard viz
         #fretboard
           span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
@@ -69,15 +63,15 @@ html(lang='en')
             div.string
               - var fret = 0;
               while fret < FRETS
-                //- For some reason .includes does not work. Probably has to do with JS version.
-                - var class_marker = FRET_MARKERS.indexOf(fret) != -1 ? 'fret-marker' : '';
-                span.note(
-                    class=`${class_marker}`
-                    v-bind:class="{ show: fretboard.fb[" + string + "][" + fret + "].show, root: fretboard.fb[" + string + "][" + fret + "].isRoot }"
-                ) {{ fretboard.fb[#{string}][#{fret}].displayStr }}
+                span.note(v-bind:class="{ " +
+                    "show: fretboard.frets[" + string + "][" + fret + "].note.selected, " +
+                    "root: fretboard.frets[" + string + "][" + fret + "].note.intervalToTonic == '1P', " +
+                    "fretmarker: fretboard.frets[" + string + "][" + fret + "].marker, " +
+                    "}"
+                ) {{ fretboard.frets[#{string}][#{fret}].fretStr }}
                 if fret == 0
                   span.fret.bold ｜｜
                 else
                   span.fret ｜
-                - fret++
-            - string++
+                - fret++;
+            - string++;
