@@ -1,7 +1,21 @@
-ALL_NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
+    'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
+    'harmonic minor', 'melodic minor']
 FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
 
 from typing import List, Any
+
+
+def zipLongest(
+    arr1: List[Any], arr2: List[Any], fill: Any = None) -> List[List[Any]]:
+  ret = []
+  for i in range(max(len(arr1), len(arr2))):
+    e1 = arr1[i] if i < len(arr1) else fill
+    e2 = arr2[i] if i < len(arr2) else fill
+    ret.append([e1, e2])
+  return ret
+
 
 class Note:
   """Represents a note.
@@ -80,7 +94,7 @@ class Scale:
 
     self.notes = []
     self.all_notes = []
-    for note_str in ALL_NOTES:
+    for note_str in NOTES:
       selected = notes_str.includes(note_str)
       interval = Tonal.Distance.interval(self.root.note, note_str)
       if selected:
@@ -160,6 +174,9 @@ class App(object):
       'data': {
         'scale': self.scale,
         'fretboard': self.fretboard,
+        'NOTES': NOTES,
+        # Zip longest NOTES and SCALES to display in a table.
+        'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
       },
     }))
 

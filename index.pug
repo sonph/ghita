@@ -1,6 +1,3 @@
-//- TODO: Instead of using Pug's iteration, use Vue's iteration instead.
-- var NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-- var SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian', 'blues', 'major pentatonic', 'minor pentatonic', 'harmonic minor', 'melodic minor']
 - var STRINGS = 6;
 - var FRETS = 22;
 
@@ -22,22 +19,19 @@ html(lang='en')
         h3 Scale
         #scaleSelector
           table
-            - var i = 0;
-            while i < SCALES.length
-              tr
-                if i < NOTES.length
-                  td.selectable(
-                      v-bind:class="{ selected: scale.root.note == '" + NOTES[i] + "'}"
-                      v-on:click="scale.setRoot('" + NOTES[i] + "'); fretboard.showScale(scale)"
-                  )= NOTES[i]
-                else
-                  td
-                td.selectable(
-                    v-bind:class="{ selected: scale.scale == '" + SCALES[i] + "'}"
-                    v-on:click="scale.setScale('" + SCALES[i] + "'); fretboard.showScale(scale)"
-                )= SCALES[i]
-              - i++;
-
+            tr(v-for="noteScale in ZIP_NOTES_SCALES")
+              //- Notes in column 1
+              td.selectable(v-if="noteScale[0]"
+                  v-bind:class="{ selected: scale.root.note == noteScale[0]}"
+                  v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
+              ) {{ noteScale[0] }}
+              td(v-else)
+              //- Scales in column 2
+              td.selectable(v-if="noteScale[1]"
+                  v-bind:class="{ selected: scale.scale == noteScale[1]}"
+                  v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
+              ) {{ noteScale[1] }}
+              td(v-else)
 
         br
         br
@@ -46,24 +40,20 @@ html(lang='en')
         #scale
           table
             tr
-              //- Vue iterates scale.all_notes
-              - var i = 0;
-              while i < 12
-                td.selectable(
-                    v-bind:class="{ selected: scale.all_notes[" + i + "].selected }"
-                ) {{ scale.all_notes[#{i}].note }}
-                - i++;
+              td.selectable(
+                  v-for="note in scale.all_notes"
+                  v-bind:class="{ selected: note.selected, }"
+              ) {{ note.note }}
             tr
-              - var i = 0;
-              while i < 12
-                td.selectable(
-                    v-bind:class="{ selected: scale.all_notes[" + i + "].selected }"
-                ) {{ scale.all_notes[#{i}].intervalToTonic }}
-                - i++;
+              td.selectable(
+                  v-for="note in scale.all_notes"
+                  v-bind:class="{ selected: note.selected, }"
+              ) {{ note.intervalToTonic }}
 
         br
         br
 
+        //- TODO: convert to table and vue iteration
         h3 Fretboard viz
         #fretboard
           span#fret-indicator   -                        3              5               7              9                      12                     15             17             19
