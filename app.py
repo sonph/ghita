@@ -123,8 +123,10 @@ class Fretboard:
 
   Attributes:
     frets: map [string: int][fret: int] -> Note, all frets
+    shownFrets: [Fret], frets currently shown
   """
   def __init__(self):
+    self.shownFrets = []
     self.frets = {}
     openNotes = ['E', 'B', 'G', 'D', 'A', 'E']
     for string, openNote in enumerate(openNotes):
@@ -137,6 +139,8 @@ class Fretboard:
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
+    self.reset()
+
     notes = scale.notes
     notes_str = []
     for note in scale.notes:
@@ -150,8 +154,12 @@ class Fretboard:
         if index != -1:
           self.frets[string][fret].note.select().interval(
               scale.notes[index].intervalToTonic)
-        else:
-          self.frets[string][fret].note.select(False).interval(None)
+          self.shownFrets.append(self.frets[string][fret])
+
+  def reset(self):
+    for fret in self.shownFrets:
+      fret.note.select(False).interval(None)
+    self.shownFrets = []
 
 
 class App(object):
