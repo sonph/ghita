@@ -23,13 +23,13 @@ html(lang='en')
           table
             tr(v-for="noteScale in ZIP_NOTES_SCALES")
               //- Notes in column 1
-              td.selectable(v-if="noteScale[0]"
+              td.selectable.clickable(v-if="noteScale[0]"
                   v-bind:class="{ selected: scale.root.note == noteScale[0]}"
                   v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
               ) {{ noteScale[0] }}
               td(v-else)
               //- Scales in column 2
-              td.selectable(v-if="noteScale[1]"
+              td.selectable.clickable(v-if="noteScale[1]"
                   v-bind:class="{ selected: scale.scale == noteScale[1]}"
                   v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
               ) {{ noteScale[1] }}
@@ -74,4 +74,4 @@ html(lang='en')
                       "}"
               )
                 | {{ fret.note.note }}
-                sup.interval  {{ fret.note.intervalToTonic }}
+                sub.interval  {{ fret.note.intervalToTonic }}
