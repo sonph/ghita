@@ -180,16 +180,19 @@ class App(object):
     self.initVue()
 
   def initVue(self) -> None:
-    window.app = __new__(Vue({
-      'el': '#app',
-      'data': {
-        'scale': self.scale,
-        'fretboard': self.fretboard,
-        'NOTES': NOTES,
-        # Zip longest NOTES and SCALES to display in a table.
-        'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
-        'FRET_MARKERS': FRET_MARKERS,
-      },
-    }))
+    # (#15) Workaround.
+    if not window.vue_loaded:
+      window.vue_loaded = True
+      window.app = __new__(Vue({
+        'el': '#app',
+        'data': {
+          'scale': self.scale,
+          'fretboard': self.fretboard,
+          'NOTES': NOTES,
+          # Zip longest NOTES and SCALES to display in a table.
+          'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
+          'FRET_MARKERS': FRET_MARKERS,
+        },
+      }))
 
 window.addEventListener('load', lambda: App().start())

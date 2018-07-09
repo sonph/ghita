@@ -12,7 +12,9 @@ git branch -D gh-pages && confirm && \
 git checkout -b gh-pages && confirm && \
 python3 -m transcrypt --build app.py && confirm && \
 pug *.pug -o ./ && confirm && \
-git add -f __javascript__ index.html && confirm && \
+# (#15) Workaround.
+cp -v __javascript__/app.min.js ./ && \
+git add -f __javascript__ index.html app.min.js && confirm && \
 git commit -m "Deploy" && confirm && \
 git push -f origin gh-pages && confirm && \
 git checkout "$CURRENT_BRANCH"
