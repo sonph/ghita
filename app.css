@@ -17,31 +17,57 @@
   padding-right: 1em;
 }
 
-#fretboard .fret {
-  color: #eee;
+#fretboard table td {
+  border: none;
+  text-align: center;
 }
-#fretboard .note {
+
+#fretboard table td.fretnumber {
+  border: none;
+}
+
+#fretboard table td.note {
+  border-right: 1px solid #999;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 2px;
   color: #fff;
+
+  /* TODO: Prevents cell resizing when switching between notes with/without
+  accidentals */
+  min-width: 5em;
 }
-#fretboard .note.show {
-  color: #333;
+
+#fretboard table td sup.interval {
+  font-size: 0.6em;
+  color: #888;
 }
-#fretboard .note.show.root {
-  color: #6200EE;
-  font-weight: bold;
-}
-#fretboard .note.fret-marker {
-  color: #eee;
-  background-color: #eee;
-}
-#fretboard .note.fret-marker.show {
-  color: #333;
-}
-#fretboard .note.fret-marker.show.root {
-  color: #6200EE;
+
+#fretboard table td.note.fretmarker {
+  background-color: #f5f5f5;
+  color: #f5f5f5;
 }
 
 /* Nut */
-#fretboard .fret.bold {
+#fretboard table td.note:first-child {
+  border-right: 2px solid #999;
+}
+
+/* Last fret */
+#fretboard table td.note:last-child {
+  border-right: none;
+}
+
+#fretboard table td.note.root.show {
+  color: #6200EE;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+#fretboard table td.note.bluenote.show {
+  color: #018786;
+}
+
+#fretboard table td.note.show {
   color: #333;
 }
