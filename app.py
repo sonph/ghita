@@ -109,13 +109,16 @@ class Fret:
     note: Note, note
     marker: bool, if this has a fret marker
     fretStr: str, string to show on fretboard
+    fretNumber: int, fret number
   """
   def __init__(self,
       note: Note,
-      marker: bool) -> None:
+      marker: bool,
+      fretNumber: int) -> None:
     self.note = note
     self.marker = marker
     self.fretStr = sprintf('  %-2s  ', self.note.note)
+    self.fretNumber = fretNumber
 
 
 class Fretboard:
@@ -135,7 +138,7 @@ class Fretboard:
         note = Note.normalize(Tonal.Distance.transpose(
             openNote, Tonal.Interval.fromSemitones(fret)))
         self.frets[string][fret] = Fret(
-            Note(note), FRET_MARKERS.indexOf(fret) != -1)
+            Note(note), FRET_MARKERS.indexOf(fret) != -1, fret)
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
@@ -185,6 +188,7 @@ class App(object):
         'NOTES': NOTES,
         # Zip longest NOTES and SCALES to display in a table.
         'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
+        'FRET_MARKERS': FRET_MARKERS,
       },
     }))
 
