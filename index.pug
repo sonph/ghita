@@ -11,6 +11,8 @@ html(lang='en')
     link(rel='stylesheet' type='text/css' href='./assets/css/app.css')
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
     script(type='text/javascript' src='./assets/js/tonal.min.js')
+    //- TODO: need to build tonal detect
+    script(type='text/javascript' src='./assets/js/tonal.detect.js')
     script(type='text/javascript' src='./assets/js/sprintf.js')
     script(type='text/javascript' src='./__javascript__/app.js')
     //- (#15) Workaround.
@@ -47,12 +49,18 @@ html(lang='en')
           tr
             td.selectable(
                 v-for="note in scale.all_notes"
-                v-bind:class="{ selected: note.selected, }"
+                v-bind:class="{ " +
+                    "selected: note.selected, " +
+                    "alternate: chord.contains(note.note), " +
+                    " }"
             ) {{ note.note }}
           tr
             td.selectable(
                 v-for="note in scale.all_notes"
-                v-bind:class="{ selected: note.selected, }"
+                v-bind:class="{ " +
+                    "selected: note.selected, " +
+                    "alternate: chord.contains(note.note), " +
+                    "}"
             ) {{ note.intervalToTonic }}
 
       br
@@ -87,11 +95,19 @@ html(lang='en')
             ) {{ row[2] }}
 
             //- Chords in column 3
-            td.selectable.clickable(v-if="row[3]") {{ row[3] }}
+            td.selectable.clickable(
+                v-if="row[3]"
+                v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
+                v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
+            ) {{ row[3] }}
             td(v-else)
 
             //- Chord intervals in column 4
-            td.selectable.clickable(v-if="row[4]") {{ row[4] }}
+            td.selectable.clickable(
+                v-if="row[4]"
+                v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
+                v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
+                ) {{ row[4] }}
             td(v-else)
 
       br
@@ -105,7 +121,10 @@ html(lang='en')
                 v-for="note in scale.all_notes"
                 v-bind:class="{ selected: note.selected, }"
             ) {{ note.note }}
-          tr(v-for="note_chords in scale.all_chords_transposed")
+          tr(v-for="chord_names in scale.all_chords_transposed")
+            //- index used to identify root note for chord.
             td.selectable.clickable(
-                v-for="chord in note_chords"
-            ) {{ chord }}
+                v-for="(chord_name, index) in chord_names"
+                v-bind:class="{ selected: chord.root.note == VUE_CONSTANTS.NOTES[index] && chord.chord == chord_name }"
+                v-on:click="chord.setRoot(VUE_CONSTANTS.NOTES[index]).setChord(chord_name)"
+            ) {{ chord_name }}

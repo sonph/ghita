@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Optional
 
 NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
@@ -58,7 +58,7 @@ class Note:
     self.note = self.normalize(note)
     self.intervalToTonic = intervalToTonic
     self.selected = selected
-    self.update()
+    self._update()
 
   def select(self, select: bool = True) -> Note:
     """Marks or unmarks this note as selected."""
@@ -70,7 +70,7 @@ class Note:
     self.intervalToTonic = interval
     return self
 
-  def update(self) -> None:
+  def _update(self) -> None:
     """Updates all derived attributes, such as those used in Vue."""
     pass
 
@@ -83,102 +83,158 @@ class Note:
     return note
 
 
-class Chord:
+class NotesCollection:
+  """Collection of notes.
+
+  Attributes:
+      notes: List[Note], list of notes
+      all_notes: List[Note], 12 chromatic notes (some selected), used for UI
+  """
+  def __init__(self):
+    pass
+
+  def _getNotes(self) -> List[str]:
+    """Gets notes as strings in this particular collection."""
+    raise NotImplementedError()
+
+  def _updateNotes(self):
+    tonal_notes_str = self._getNotes()
+
+    notes_str = []
+    for note_str in tonal_notes_str:
+      notes_str.append(Note.normalize(note_str))
+
+    self.notes = []
+    self.all_notes = []
+    for note_str in NOTES:
+      selected = notes_str.includes(note_str)
+      interval = Tonal.Distance.interval(self.root.note, note_str)
+      if selected:
+        self.notes.append(Note(note_str, interval, selected))
+      self.all_notes.append(Note(note_str, interval, selected))
+
+
+class Chord(NotesCollection):
   """Represents a chord.
 
   Attributes:
-    root
-    chord
-    notes
-    all_notes
+      root: Note, root note
+      chord: str, chord type
+
+    inherited from NotesCollection:
+      notes
+      all_notes
   """
   def __init__(self,
       root: Note = Note('C', '1P', True),
       chord: str = 'M') -> None:
     self.root = root
     self.chord = chord
-    self.update()
+    self._update()
 
-  def update(self):
+  def setRoot(self, root: str) -> Chord:
+    self.root = Note(root, '1P', True)
+    self._update()
+    return self
+
+  def setChord(self, chord: str) -> Chord:
+    self.chord = chord
+    self._update()
+    return self
+
+  def setRootAndChord(self, root, chord):
+    self.root = Note(root, '1P', True)
+    self.chord = chord
+    self._update()
+
+  def _getNotes(self) -> List[str]:
+    return Tonal.Chord.notes('{0} {1}'.format(self.root.note, self.chord))
+
+  def contains(self, note_to_check: str) -> Optional[str]:
+    """Checks if the chord contains the note.
+
+    Returns:
+        interval if True, None otherwise.
+    """
+    for note in self.notes:
+      if note_to_check == note.note:
+        return note.intervalToTonic
+    return None
+
+  def _update(self):
     """Updates all derived attributes, such as those used in Vue."""
-    # TODO: merge this with Scale.update()
-    tonal_notes_str = Tonal.Chord.notes('{0} {1}'.format(self.root.note, self.scale))
-    notes_str = []
-    for note_str in tonal_notes_str:
-      notes_str.append(Note.normalize(note_str))
-
-    self.notes = []
-    self.all_notes = []
-    for note_str in NOTES:
-      selected = notes_str.includes(note_str)
-      interval = Tonal.Distance.interval(self.root.note, note_str)
-      if selected:
-        self.notes.append(Note(note_str, interval, selected))
-      self.all_notes.append(Note(note_str, interval, selected))
+    console.log('updating chord ' + self.root.note + ' ' + self.chord)
+    self._updateNotes()
 
 
-class Scale:
+class Scale(NotesCollection):
   """Represents a scale.
 
   Attributes:
       root: Note, root note
       scale: str, scale type
 
-      notes: List[Note], list of notes
-      all_notes: List[Note], 12 chromatic notes (some selected), used for UI
-
       chords: [str], possible chords with current root, for suggestion in
           selector UI
       all_chords: Dict[str, List[str]], map of notes in scale to possible
           chords, used to look at chord progressions
       all_chords_transposed: List[List[str]], transposed all_chords, used for UI
+
+    inherited from NotesCollection:
+      notes
+      all_notes
   """
   def __init__(self,
       root: str = 'C',
       scale: str = 'ionian') -> None:
     self.root = Note(root, '1P', True)
     self.scale = scale
-    self.update()
+    self._update()
 
   def setRoot(self, note: str) -> Scale:
-    """Sets root note."""
     self.root = Note(note, '1P', True)
-    self.update()
+    self._update()
     return self
 
   def setScale(self, scale: str) -> Scale:
-    """Sets scale type."""
     self.scale = scale
-    self.update()
+    self._update()
     return self
 
-  def update(self):
+  def setRootAndScale(self, root: str, scale: str) -> None:
+    self.root = Note(root, '1P', True)
+    self.scale = scale
+    self._update()
+
+  def contains(self, note_to_check: str) -> Optional[str]:
+    """Checks if the scale contains the note.
+
+    Returns:
+        interval if True, None otherwise.
+    """
+    for note in self.notes:
+      if note_to_check == note.note:
+        return note.intervalToTonic
+    return None
+
+  def _getNotes(self) -> List[str]:
+    return Tonal.Scale.notes('{0} {1}'.format(self.root.note, self.scale))
+
+  def _update(self):
     """Updates all derived attributes."""
+    console.log('updating scale ' + self.root.note + ' ' + self.scale)
+    self._updateNotes()
+
     scaleNameStr = '{0} {1}'.format(self.root.note, self.scale)
-    tonal_notes_str = Tonal.Scale.notes(scaleNameStr)
-    notes_str = []
-    for note_str in tonal_notes_str:
-      notes_str.append(Note.normalize(note_str))
-
-    self.notes = []
-    self.all_notes = []
-    for note_str in NOTES:
-      selected = notes_str.includes(note_str)
-      interval = Tonal.Distance.interval(self.root.note, note_str)
-      if selected:
-        self.notes.append(Note(note_str, interval, selected))
-      self.all_notes.append(Note(note_str, interval, selected))
-
-    self.chords = Tonal.Scale.chords(
-        '{0} {1}'.format(self.root.note, self.scale))
+    self.chords = Tonal.Scale.chords(scaleNameStr)
 
     self.all_chords = {}
-    modes = Tonal.Scale.modeNames(scaleNameStr)
+    modes = Tonal.Scale.modeNames()
     # TODO: For blues, we only get 2 alternate modes.
+    # TODO: It's possible to use Tonal.Detect.chords, but result is pretty fuzzy
     for mode in modes:
       rootNote = mode[0]
-      self.all_chords[rootNote] = Tonal.Scale.chords(
-          '{0} {1}'.format(rootNote, mode[1]))
+      self.all_chords[rootNote] = Tonal.Scale.chords(scaleNameStr)
 
     arrays = []
     for note in NOTES:
@@ -205,7 +261,6 @@ class Fret:
       fretNumber: int) -> None:
     self.note = note
     self.marker = marker
-    self.fretStr = sprintf('  %-2s  ', self.note.note)
     self.fretNumber = fretNumber
 
 
@@ -256,12 +311,14 @@ class Fretboard:
 class App(object):
   def __init__(self):
     self.scale = Scale()
+    self.chord = Chord()
     self.fretboard = Fretboard()
     self.fretboard.showScale(self.scale)
 
     # For debugging
     window.s = self.scale
     window.fb = self.fretboard
+    window.chord = self.chord
 
   def start(self) -> None:
     console.log('python start()')
@@ -275,6 +332,7 @@ class App(object):
         'el': '#app',
         'data': {
           'scale': self.scale,
+          'chord': self.chord,
           'fretboard': self.fretboard,
           'VUE_CONSTANTS': VUE_CONSTANTS,
         },

@@ -15,8 +15,13 @@ body {
   color: #6200EE;
 }
 
-.clickable:hover {
+/* Rename to something else. We have highlight 1 for scale, and 2 for chord */
+.selectable.alternate.selected, .clickable.alternate.selected:hover {
   color: #03DAC6;
+}
+
+.clickable:hover {
+  color: #999;
 }
 
 #selector table td {
