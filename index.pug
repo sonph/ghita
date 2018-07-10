@@ -16,62 +16,61 @@ html(lang='en')
     //- (#15) Workaround.
     script(type='text/javascript' src='./app.min.js')
   body
-    pre
-      #app
-        h3 Scale
-        #scaleSelector
-          table
-            tr(v-for="noteScale in ZIP_NOTES_SCALES")
-              //- Notes in column 1
-              td.selectable.clickable(v-if="noteScale[0]"
-                  v-bind:class="{ selected: scale.root.note == noteScale[0]}"
-                  v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
-              ) {{ noteScale[0] }}
-              td(v-else)
-              //- Scales in column 2
-              td.selectable.clickable(v-if="noteScale[1]"
-                  v-bind:class="{ selected: scale.scale == noteScale[1]}"
-                  v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
-              ) {{ noteScale[1] }}
-              td(v-else)
+    #app
+      h3 Scale
+      #scaleSelector
+        table
+          tr(v-for="noteScale in ZIP_NOTES_SCALES")
+            //- Notes in column 1
+            td.selectable.clickable(v-if="noteScale[0]"
+                v-bind:class="{ selected: scale.root.note == noteScale[0]}"
+                v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
+            ) {{ noteScale[0] }}
+            td(v-else)
+            //- Scales in column 2
+            td.selectable.clickable(v-if="noteScale[1]"
+                v-bind:class="{ selected: scale.scale == noteScale[1]}"
+                v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
+            ) {{ noteScale[1] }}
+            td(v-else)
 
-        br
-        br
+      br
+      br
 
-        h3 Notes
-        #scale
-          table
-            tr
-              td.selectable(
-                  v-for="note in scale.all_notes"
-                  v-bind:class="{ selected: note.selected, }"
-              ) {{ note.note }}
-            tr
-              td.selectable(
-                  v-for="note in scale.all_notes"
-                  v-bind:class="{ selected: note.selected, }"
-              ) {{ note.intervalToTonic }}
+      h3 Notes
+      #scale
+        table
+          tr
+            td.selectable(
+                v-for="note in scale.all_notes"
+                v-bind:class="{ selected: note.selected, }"
+            ) {{ note.note }}
+          tr
+            td.selectable(
+                v-for="note in scale.all_notes"
+                v-bind:class="{ selected: note.selected, }"
+            ) {{ note.intervalToTonic }}
 
-        br
-        br
+      br
+      br
 
-        //- TODO: convert to table and vue iteration
-        h3 Fretboard viz
-        #fretboard
-          table
-            //- TODO fret number indicators
-            tr
-              td.fretnumber(v-for="fret in fretboard.frets[0]")
-                span(v-if="FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
-            tr(v-for="string in fretboard.frets")
-              td.note(
-                  v-for="fret in string"
-                  v-bind:class="{" +
-                      "show: fret.note.selected, " +
-                      "root: fret.note.intervalToTonic == '1P', " +
-                      "bluenote: fret.note.intervalToTonic == '4A', " +
-                      "fretmarker: fret.marker," +
-                      "}"
-              )
-                | {{ fret.note.note }}
-                sub.interval  {{ fret.note.intervalToTonic }}
+      //- TODO: convert to table and vue iteration
+      h3 Fretboard viz
+      #fretboard
+        table
+          //- TODO fret number indicators
+          tr
+            td.fretnumber(v-for="fret in fretboard.frets[0]")
+              span(v-if="FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
+          tr(v-for="string in fretboard.frets")
+            td.note(
+                v-for="fret in string"
+                v-bind:class="{" +
+                    "show: fret.note.selected, " +
+                    "root: fret.note.intervalToTonic == '1P', " +
+                    "bluenote: fret.note.intervalToTonic == '4A', " +
+                    "fretmarker: fret.marker," +
+                    "}"
+            )
+              | {{ fret.note.note }}
+              sub.interval  {{ fret.note.intervalToTonic }}

@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'LCD Solid';
+  src: url('assets/fonts/LCD_Solid.ttf') format('truetype');
+}
+
+body {
+  font-family: 'LCD Solid';
+}
+
 .selectable {
   color: #ddd;
 }
@@ -63,7 +72,6 @@
 #fretboard table td.note.root.show {
   color: #6200EE;
   font-weight: bold;
-  font-size: 1.2em;
 }
 
 #fretboard table td.note.bluenote.show {
