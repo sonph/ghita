@@ -104,7 +104,7 @@ class NotesCollection:
       if note_str == self.root.note:
         root_index = index
 
-    self.all_notes = utils.shift_cycle(self.all_notes_sorted, root_index)
+    self.all_notes = utils.rotate(self.all_notes_sorted, root_index)
 
 
 class Chord(NotesCollection):

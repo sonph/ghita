@@ -118,7 +118,7 @@ html(lang='en')
         table
           tr
             td.selectable(
-                v-for="note in scale.all_notes"
+                v-for="note in scale.all_notes_sorted"
                 v-bind:class="{ selected: note.selected, }"
             ) {{ note.note }}
           tr(v-for="chord_names in scale.all_chords_transposed")

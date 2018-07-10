@@ -21,13 +21,11 @@ def transpose(
   return ret
 
 
-def shift_cycle(array: List[Any], num: int) -> List[Any]:
-  """Shift elements to the left, cycling to the back.
+def rotate(array: List[Any], num: int) -> List[Any]:
+  """Shifts elements to the left, cycling to the back, returning a new array.
 
-  >>> shift_cycle([1, 2, 3, 4, 5], 2)
+  >>> rotate([1, 2, 3, 4, 5], 2)
   [3, 4, 5, 1, 2]
   """
   num = num % len(array)
   return array[num:].concat(array[0:num])
-
-window.shift_cycle = shift_cycle
