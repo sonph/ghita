@@ -1,20 +1,46 @@
+from typing import List, Any
+
 NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
     'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
     'harmonic minor', 'melodic minor']
+
+# TODO: Make a standard list of chord types, and possibly a text box
+CHORDS = ['M', 'm', 'aug', 'dim',
+          'minor7', 'maj7', 'aug7', 'dim7',
+          '9', '11', '13']
 FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
 
-from typing import List, Any
-
-
-def zipLongest(
-    arr1: List[Any], arr2: List[Any], fill: Any = None) -> List[List[Any]]:
-  ret = []
-  for i in range(max(len(arr1), len(arr2))):
-    e1 = arr1[i] if i < len(arr1) else fill
-    e2 = arr2[i] if i < len(arr2) else fill
-    ret.append([e1, e2])
+def transpose(
+    arrays: List[List[Any]], fill: Any = None) -> List[List[Any]]:
+  """Transpose a list of lists, for table display in Vue."""
+  # Can't use max(iterable) in transcrypt here.
+  longestLength = len(arrays[0])
+  for array in arrays:
+    if len(array) > longestLength:
+      longestLength = len(array)
+  ret = []  # type: List[List[Any]]
+  for i in range(longestLength):
+    ret.append([])
+    for array in arrays:
+      value = array[i] if i < len(array) else fill
+      ret[i].append(value)
   return ret
+
+SCALES_INTERVALS = []
+for scale in SCALES:
+  SCALES_INTERVALS.append(Tonal.Scale.intervals(scale).join(' '))
+
+CHORDS_INTERVALS = []
+for chord in CHORDS:
+  CHORDS_INTERVALS.append(Tonal.Chord.intervals(chord).join(' '))
+
+VUE_CONSTANTS = {
+  'NOTES': NOTES,
+  'SCALES': SCALES,
+  'SCALE_SELECTORS': transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
+  'FRET_MARKERS': FRET_MARKERS,
+}
 
 
 class Note:
@@ -55,6 +81,40 @@ class Note:
     if note.endswith('b'):
       note = Tonal.Note.enharmonic(note)
     return note
+
+
+class Chord:
+  """Represents a chord.
+
+  Attributes:
+    root
+    chord
+    notes
+    all_notes
+  """
+  def __init__(self,
+      root: Note = Note('C', '1P', True),
+      chord: str = 'M') -> None:
+    self.root = root
+    self.chord = chord
+    self.update()
+
+  def update(self):
+    """Updates all derived attributes, such as those used in Vue."""
+    # TODO: merge this with Scale.update()
+    tonal_notes_str = Tonal.Chord.notes('{0} {1}'.format(self.root.note, self.scale))
+    notes_str = []
+    for note_str in tonal_notes_str:
+      notes_str.append(Note.normalize(note_str))
+
+    self.notes = []
+    self.all_notes = []
+    for note_str in NOTES:
+      selected = notes_str.includes(note_str)
+      interval = Tonal.Distance.interval(self.root.note, note_str)
+      if selected:
+        self.notes.append(Note(note_str, interval, selected))
+      self.all_notes.append(Note(note_str, interval, selected))
 
 
 class Scale:
@@ -188,10 +248,7 @@ class App(object):
         'data': {
           'scale': self.scale,
           'fretboard': self.fretboard,
-          'NOTES': NOTES,
-          # Zip longest NOTES and SCALES to display in a table.
-          'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
-          'FRET_MARKERS': FRET_MARKERS,
+          'VUE_CONSTANTS': VUE_CONSTANTS,
         },
       }))
 

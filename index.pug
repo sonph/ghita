@@ -21,19 +21,39 @@ html(lang='en')
         h3 Scale
         #scaleSelector
           table
-            tr(v-for="noteScale in ZIP_NOTES_SCALES")
-              //- Notes in column 1
-              td.selectable.clickable(v-if="noteScale[0]"
-                  v-bind:class="{ selected: scale.root.note == noteScale[0]}"
-                  v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
-              ) {{ noteScale[0] }}
+            tr(v-for="row in VUE_CONSTANTS.SCALE_SELECTORS")
+              //- Root notes in column 0
+              td.selectable.clickable(v-if="row[0]"
+                  v-bind:class="{ selected: scale.root.note == row[0]}"
+                  v-on:click="scale.setRoot(row[0]); fretboard.showScale(scale)"
+              ) {{ row[0] }}
               td(v-else)
-              //- Scales in column 2
-              td.selectable.clickable(v-if="noteScale[1]"
-                  v-bind:class="{ selected: scale.scale == noteScale[1]}"
-                  v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
-              ) {{ noteScale[1] }}
+
+              //- Scales in column 1
+              td.selectable.clickable(v-if="row[1]"
+                  v-bind:class="{ selected: scale.scale == row[1]}"
+                  v-on:click="scale.setScale(row[1]); fretboard.showScale(scale)"
+              ) {{ row[1] }}
               td(v-else)
+
+              //- Scale intervals in column 2
+              td.selectable.clickable(v-if="row[2]"
+                  v-bind:class="{ selected: scale.scale == row[1]}"
+                  v-on:click="scale.setScale(row[1]); fretboard.showScale(scale)"
+              ) {{ row[2] }}
+
+              //- Chords in column 3
+              td.selectable.clickable(v-if="row[3]") {{ row[3] }}
+              td(v-else)
+
+              //- Chord intervals in column 4
+              td.selectable.clickable(v-if="row[4]") {{ row[4] }}
+              td(v-else)
+
+        br
+        br
+
+        h3 Chords
 
         br
         br
@@ -62,7 +82,7 @@ html(lang='en')
             //- TODO fret number indicators
             tr
               td.fretnumber(v-for="fret in fretboard.frets[0]")
-                span(v-if="FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
+                span(v-if="VUE_CONSTANTS.FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
             tr(v-for="string in fretboard.frets")
               td.note(
                   v-for="fret in string"
