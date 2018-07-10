@@ -11,57 +11,22 @@ html(lang='en')
     link(rel='stylesheet' type='text/css' href='./assets/css/app.css')
     script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js')
     script(type='text/javascript' src='./assets/js/tonal.min.js')
+    //- TODO: need to build tonal detect
+    script(type='text/javascript' src='./assets/js/tonal.detect.js')
     script(type='text/javascript' src='./assets/js/sprintf.js')
     script(type='text/javascript' src='./__javascript__/app.js')
     //- (#15) Workaround.
     script(type='text/javascript' src='./app.min.js')
   body
     #app
-      h3 Scale
-      #scaleSelector
-        table
-          tr(v-for="noteScale in ZIP_NOTES_SCALES")
-            //- Notes in column 1
-            td.selectable.clickable(v-if="noteScale[0]"
-                v-bind:class="{ selected: scale.root.note == noteScale[0]}"
-                v-on:click="scale.setRoot(noteScale[0]); fretboard.showScale(scale)"
-            ) {{ noteScale[0] }}
-            td(v-else)
-            //- Scales in column 2
-            td.selectable.clickable(v-if="noteScale[1]"
-                v-bind:class="{ selected: scale.scale == noteScale[1]}"
-                v-on:click="scale.setScale(noteScale[1]); fretboard.showScale(scale)"
-            ) {{ noteScale[1] }}
-            td(v-else)
-
-      br
-      br
-
-      h3 Notes
-      #scale
-        table
-          tr
-            td.selectable(
-                v-for="note in scale.all_notes"
-                v-bind:class="{ selected: note.selected, }"
-            ) {{ note.note }}
-          tr
-            td.selectable(
-                v-for="note in scale.all_notes"
-                v-bind:class="{ selected: note.selected, }"
-            ) {{ note.intervalToTonic }}
-
-      br
-      br
-
-      //- TODO: convert to table and vue iteration
-      h3 Fretboard viz
+      h3 Fretboard
       #fretboard
         table
-          //- TODO fret number indicators
+          //- Fret number indicators
           tr
             td.fretnumber(v-for="fret in fretboard.frets[0]")
-              span(v-if="FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
+              span(v-if="VUE_CONSTANTS.FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
+          //- Fretboard
           tr(v-for="string in fretboard.frets")
             td.note(
                 v-for="fret in string"
@@ -74,3 +39,92 @@ html(lang='en')
             )
               | {{ fret.note.note }}
               sub.interval  {{ fret.note.intervalToTonic }}
+
+      br
+      br
+
+      h3 Notes
+      #scale
+        table
+          tr
+            td.selectable(
+                v-for="note in scale.all_notes"
+                v-bind:class="{ " +
+                    "selected: note.selected, " +
+                    "alternate: chord.contains(note.note), " +
+                    " }"
+            ) {{ note.note }}
+          tr
+            td.selectable(
+                v-for="note in scale.all_notes"
+                v-bind:class="{ " +
+                    "selected: note.selected, " +
+                    "alternate: chord.contains(note.note), " +
+                    "}"
+            ) {{ note.intervalToTonic }}
+
+      br
+      br
+
+      h3 Selector
+      #selector
+        table
+          tr
+            td Root
+            td(colspan='2') Scale
+            td(colspan='2') Chord
+          tr(v-for="row in VUE_CONSTANTS.SCALE_SELECTORS")
+            //- Root notes in column 0
+            td.selectable.clickable(v-if="row[0]"
+                v-bind:class="{ selected: scale.root.note == row[0]}"
+                v-on:click="scale.setRoot(row[0]); fretboard.showScale(scale)"
+            ) {{ row[0] }}
+            td(v-else)
+
+            //- Scales in column 1
+            td.selectable.clickable(v-if="row[1]"
+                v-bind:class="{ selected: scale.scale == row[1]}"
+                v-on:click="scale.setScale(row[1]); fretboard.showScale(scale)"
+            ) {{ row[1] }}
+            td(v-else)
+
+            //- Scale intervals in column 2
+            td.selectable.clickable(v-if="row[2]"
+                v-bind:class="{ selected: scale.scale == row[1]}"
+                v-on:click="scale.setScale(row[1]); fretboard.showScale(scale)"
+            ) {{ row[2] }}
+
+            //- Chords in column 3
+            td.selectable.clickable(
+                v-if="row[3]"
+                v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
+                v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
+            ) {{ row[3] }}
+            td(v-else)
+
+            //- Chord intervals in column 4
+            td.selectable.clickable(
+                v-if="row[4]"
+                v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
+                v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
+                ) {{ row[4] }}
+            td(v-else)
+
+      br
+      br
+
+      h3 Chords in scale
+      #scaleChords
+        table
+          tr
+            td.selectable(
+                v-for="note in scale.all_notes"
+                v-bind:class="{ selected: note.selected, }"
+            ) {{ note.note }}
+          tr(v-for="chord_names in scale.all_chords_transposed")
+            //- index used to identify root note for chord.
+            td.selectable.clickable(
+                v-for="(chord_name, index) in chord_names"
+                v-bind:class="{ selected: chord.root.note == VUE_CONSTANTS.NOTES[index] && chord.chord == chord_name }"
+                v-on:click="chord.setRoot(VUE_CONSTANTS.NOTES[index]).setChord(chord_name)"
+            ) {{ chord_name }}

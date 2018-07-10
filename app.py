@@ -1,20 +1,46 @@
+from typing import List, Any, Optional
+
 NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
     'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
     'harmonic minor', 'melodic minor']
+
+# TODO: Make a standard list of chord types, and possibly a text box
+CHORDS = ['M', 'm', 'aug', 'dim',
+          'minor7', 'maj7', 'aug7', 'dim7',
+          '9', '11', '13']
 FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
 
-from typing import List, Any
-
-
-def zipLongest(
-    arr1: List[Any], arr2: List[Any], fill: Any = None) -> List[List[Any]]:
-  ret = []
-  for i in range(max(len(arr1), len(arr2))):
-    e1 = arr1[i] if i < len(arr1) else fill
-    e2 = arr2[i] if i < len(arr2) else fill
-    ret.append([e1, e2])
+def transpose(
+    arrays: List[List[Any]], fill: Any = None) -> List[List[Any]]:
+  """Transpose a list of lists, for table display in Vue."""
+  # Can't use max(iterable) in transcrypt here.
+  longestLength = len(arrays[0])
+  for array in arrays:
+    if len(array) > longestLength:
+      longestLength = len(array)
+  ret = []  # type: List[List[Any]]
+  for i in range(longestLength):
+    ret.append([])
+    for array in arrays:
+      value = array[i] if i < len(array) else fill
+      ret[i].append(value)
   return ret
+
+SCALES_INTERVALS = []
+for scale in SCALES:
+  SCALES_INTERVALS.append(Tonal.Scale.intervals(scale).join(' '))
+
+CHORDS_INTERVALS = []
+for chord in CHORDS:
+  CHORDS_INTERVALS.append(Tonal.Chord.intervals(chord).join(' '))
+
+VUE_CONSTANTS = {
+  'NOTES': NOTES,
+  'SCALES': SCALES,
+  'SCALE_SELECTORS': transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
+  'FRET_MARKERS': FRET_MARKERS,
+}
 
 
 class Note:
@@ -32,7 +58,7 @@ class Note:
     self.note = self.normalize(note)
     self.intervalToTonic = intervalToTonic
     self.selected = selected
-    self.update()
+    self._update()
 
   def select(self, select: bool = True) -> Note:
     """Marks or unmarks this note as selected."""
@@ -44,7 +70,7 @@ class Note:
     self.intervalToTonic = interval
     return self
 
-  def update(self) -> None:
+  def _update(self) -> None:
     """Updates all derived attributes, such as those used in Vue."""
     pass
 
@@ -57,37 +83,23 @@ class Note:
     return note
 
 
-class Scale:
-  """Represents a scale.
+class NotesCollection:
+  """Collection of notes.
 
   Attributes:
-      root: Note, root note
-      scale: str, scale type
-      notes: [Note], list of notes
-      all_notes: [Note], 12 chromatic notes (some selected), used for UI
+      notes: List[Note], list of notes
+      all_notes: List[Note], 12 chromatic notes (some selected), used for UI
   """
-  def __init__(self,
-      root: Note = Note('C', '1P', True),
-      scale: str = 'ionian') -> None:
-    self.root = root
-    self.scale = scale
-    self.update()
+  def __init__(self):
+    pass
 
-  def setRoot(self, note: str) -> Scale:
-    """Sets root note."""
-    self.root = Note(note, '1P', True)
-    self.update()
-    return self
+  def _getNotes(self) -> List[str]:
+    """Gets notes as strings in this particular collection."""
+    raise NotImplementedError()
 
-  def setScale(self, scale: str) -> Scale:
-    """Sets scale type."""
-    self.scale = scale
-    self.update()
-    return self
+  def _updateNotes(self):
+    tonal_notes_str = self._getNotes()
 
-  def update(self):
-    """Updates all derived attributes."""
-    tonal_notes_str = Tonal.Scale.notes('{0} {1}'.format(self.root.note, self.scale))
     notes_str = []
     for note_str in tonal_notes_str:
       notes_str.append(Note.normalize(note_str))
@@ -100,6 +112,138 @@ class Scale:
       if selected:
         self.notes.append(Note(note_str, interval, selected))
       self.all_notes.append(Note(note_str, interval, selected))
+
+
+class Chord(NotesCollection):
+  """Represents a chord.
+
+  Attributes:
+      root: Note, root note
+      chord: str, chord type
+
+    inherited from NotesCollection:
+      notes
+      all_notes
+  """
+  def __init__(self,
+      root: Note = Note('C', '1P', True),
+      chord: str = 'M') -> None:
+    self.root = root
+    self.chord = chord
+    self._update()
+
+  def setRoot(self, root: str) -> Chord:
+    self.root = Note(root, '1P', True)
+    self._update()
+    return self
+
+  def setChord(self, chord: str) -> Chord:
+    self.chord = chord
+    self._update()
+    return self
+
+  def setRootAndChord(self, root, chord):
+    self.root = Note(root, '1P', True)
+    self.chord = chord
+    self._update()
+
+  def _getNotes(self) -> List[str]:
+    return Tonal.Chord.notes('{0} {1}'.format(self.root.note, self.chord))
+
+  def contains(self, note_to_check: str) -> Optional[str]:
+    """Checks if the chord contains the note.
+
+    Returns:
+        interval if True, None otherwise.
+    """
+    for note in self.notes:
+      if note_to_check == note.note:
+        return note.intervalToTonic
+    return None
+
+  def _update(self):
+    """Updates all derived attributes, such as those used in Vue."""
+    console.log('updating chord ' + self.root.note + ' ' + self.chord)
+    self._updateNotes()
+
+
+class Scale(NotesCollection):
+  """Represents a scale.
+
+  Attributes:
+      root: Note, root note
+      scale: str, scale type
+
+      chords: [str], possible chords with current root, for suggestion in
+          selector UI
+      all_chords: Dict[str, List[str]], map of notes in scale to possible
+          chords, used to look at chord progressions
+      all_chords_transposed: List[List[str]], transposed all_chords, used for UI
+
+    inherited from NotesCollection:
+      notes
+      all_notes
+  """
+  def __init__(self,
+      root: str = 'C',
+      scale: str = 'ionian') -> None:
+    self.root = Note(root, '1P', True)
+    self.scale = scale
+    self._update()
+
+  def setRoot(self, note: str) -> Scale:
+    self.root = Note(note, '1P', True)
+    self._update()
+    return self
+
+  def setScale(self, scale: str) -> Scale:
+    self.scale = scale
+    self._update()
+    return self
+
+  def setRootAndScale(self, root: str, scale: str) -> None:
+    self.root = Note(root, '1P', True)
+    self.scale = scale
+    self._update()
+
+  def contains(self, note_to_check: str) -> Optional[str]:
+    """Checks if the scale contains the note.
+
+    Returns:
+        interval if True, None otherwise.
+    """
+    for note in self.notes:
+      if note_to_check == note.note:
+        return note.intervalToTonic
+    return None
+
+  def _getNotes(self) -> List[str]:
+    return Tonal.Scale.notes('{0} {1}'.format(self.root.note, self.scale))
+
+  def _update(self):
+    """Updates all derived attributes."""
+    console.log('updating scale ' + self.root.note + ' ' + self.scale)
+    self._updateNotes()
+
+    scaleNameStr = '{0} {1}'.format(self.root.note, self.scale)
+    self.chords = Tonal.Scale.chords(scaleNameStr)
+
+    self.all_chords = {}
+    modes = Tonal.Scale.modeNames()
+    # TODO: For blues, we only get 2 alternate modes.
+    # TODO: It's possible to use Tonal.Detect.chords, but result is pretty fuzzy
+    for mode in modes:
+      rootNote = mode[0]
+      self.all_chords[rootNote] = Tonal.Scale.chords(scaleNameStr)
+
+    arrays = []
+    for note in NOTES:
+      if note in self.all_chords:
+        arrays.append(self.all_chords[note])
+      else:
+        # Empty list of chords for notes that are not in scale.
+        arrays.append([])
+    self.all_chords_transposed = transpose(arrays)
 
 
 class Fret:
@@ -117,7 +261,6 @@ class Fret:
       fretNumber: int) -> None:
     self.note = note
     self.marker = marker
-    self.fretStr = sprintf('  %-2s  ', self.note.note)
     self.fretNumber = fretNumber
 
 
@@ -168,12 +311,14 @@ class Fretboard:
 class App(object):
   def __init__(self):
     self.scale = Scale()
+    self.chord = Chord()
     self.fretboard = Fretboard()
     self.fretboard.showScale(self.scale)
 
     # For debugging
     window.s = self.scale
     window.fb = self.fretboard
+    window.chord = self.chord
 
   def start(self) -> None:
     console.log('python start()')
@@ -187,11 +332,9 @@ class App(object):
         'el': '#app',
         'data': {
           'scale': self.scale,
+          'chord': self.chord,
           'fretboard': self.fretboard,
-          'NOTES': NOTES,
-          # Zip longest NOTES and SCALES to display in a table.
-          'ZIP_NOTES_SCALES': zipLongest(NOTES, SCALES),
-          'FRET_MARKERS': FRET_MARKERS,
+          'VUE_CONSTANTS': VUE_CONSTANTS,
         },
       }))
 

@@ -5,6 +5,7 @@
 
 body {
   font-family: 'LCD Solid';
+  padding: 2em;
 }
 
 .selectable {
@@ -14,16 +15,24 @@ body {
   color: #6200EE;
 }
 
-.clickable:hover {
+/* Rename to something else. We have highlight 1 for scale, and 2 for chord */
+.selectable.alternate.selected, .clickable.alternate.selected:hover {
   color: #03DAC6;
 }
 
-#scaleSelector tr td:first-child {
-  padding-right: 2em;
+.clickable:hover {
+  color: #999;
 }
 
-#scale tr td {
+#selector table td {
+  padding-left: 1em;
   padding-right: 1em;
+  white-space: nowrap;
+}
+
+#scale td, #scaleChords td {
+  padding-right: 1em;
+  text-align: center;
 }
 
 #fretboard table {
@@ -35,6 +44,7 @@ body {
 #fretboard table td {
   border: none;
   text-align: center;
+  white-space: nowrap;
 }
 
 #fretboard table td.fretnumber {
