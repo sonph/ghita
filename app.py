@@ -1,5 +1,7 @@
 from typing import List, Any, Optional
 
+import utils
+
 NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
     'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
@@ -10,22 +12,6 @@ CHORDS = ['M', 'm', 'aug', 'dim',
           'minor7', 'maj7', 'aug7', 'dim7',
           '9', '11', '13']
 FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
-
-def transpose(
-    arrays: List[List[Any]], fill: Any = None) -> List[List[Any]]:
-  """Transpose a list of lists, for table display in Vue."""
-  # Can't use max(iterable) in transcrypt here.
-  longestLength = len(arrays[0])
-  for array in arrays:
-    if len(array) > longestLength:
-      longestLength = len(array)
-  ret = []  # type: List[List[Any]]
-  for i in range(longestLength):
-    ret.append([])
-    for array in arrays:
-      value = array[i] if i < len(array) else fill
-      ret[i].append(value)
-  return ret
 
 SCALES_INTERVALS = []
 for scale in SCALES:
@@ -38,7 +24,7 @@ for chord in CHORDS:
 VUE_CONSTANTS = {
   'NOTES': NOTES,
   'SCALES': SCALES,
-  'SCALE_SELECTORS': transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
+  'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
   'FRET_MARKERS': FRET_MARKERS,
 }
 
@@ -88,7 +74,9 @@ class NotesCollection:
 
   Attributes:
       notes: List[Note], list of notes
-      all_notes: List[Note], 12 chromatic notes (some selected), used for UI
+      all_notes_sorted: List[Note], 12 chromatic notes (some selected),
+          starting from A
+      all_notes: List[Note], similar to all_notes_sorted, but starting from root
   """
   def __init__(self):
     pass
@@ -105,13 +93,18 @@ class NotesCollection:
       notes_str.append(Note.normalize(note_str))
 
     self.notes = []
-    self.all_notes = []
-    for note_str in NOTES:
+    self.all_notes_sorted = []
+    for index, note_str in enumerate(NOTES):
       selected = notes_str.includes(note_str)
       interval = Tonal.Distance.interval(self.root.note, note_str)
       if selected:
         self.notes.append(Note(note_str, interval, selected))
-      self.all_notes.append(Note(note_str, interval, selected))
+      self.all_notes_sorted.append(Note(note_str, interval, selected))
+
+      if note_str == self.root.note:
+        root_index = index
+
+    self.all_notes = utils.rotate(self.all_notes_sorted, root_index)
 
 
 class Chord(NotesCollection):
@@ -124,6 +117,7 @@ class Chord(NotesCollection):
     inherited from NotesCollection:
       notes
       all_notes
+      all_notes_sorted
   """
   def __init__(self,
       root: Note = Note('C', '1P', True),
@@ -183,6 +177,7 @@ class Scale(NotesCollection):
     inherited from NotesCollection:
       notes
       all_notes
+      all_notes_sorted
   """
   def __init__(self,
       root: str = 'C',
@@ -244,7 +239,7 @@ class Scale(NotesCollection):
       else:
         # Empty list of chords for notes that are not in scale.
         arrays.append([])
-    self.all_chords_transposed = transpose(arrays)
+    self.all_chords_transposed = utils.transpose(arrays)
 
 
 class Fret:
