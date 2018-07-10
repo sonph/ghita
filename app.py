@@ -229,12 +229,13 @@ class Scale(NotesCollection):
     self.chords = Tonal.Scale.chords(scaleNameStr)
 
     self.all_chords = {}
-    modes = Tonal.Scale.modeNames()
+    modes = Tonal.Scale.modeNames(scaleNameStr)
     # TODO: For blues, we only get 2 alternate modes.
     # TODO: It's possible to use Tonal.Detect.chords, but result is pretty fuzzy
     for mode in modes:
       rootNote = mode[0]
-      self.all_chords[rootNote] = Tonal.Scale.chords(scaleNameStr)
+      self.all_chords[rootNote] = Tonal.Scale.chords(
+          '{0} {1}'.format(rootNote, mode[1]))
 
     arrays = []
     for note in NOTES:
