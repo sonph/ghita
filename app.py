@@ -1,32 +1,8 @@
 from typing import List, Any, Optional
 
+import app_config
+import constants
 import utils
-
-NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
-SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
-    'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
-    'harmonic minor', 'melodic minor']
-
-# TODO: Make a standard list of chord types, and possibly a text box
-CHORDS = ['M', 'm', 'aug', 'dim',
-          'minor7', 'maj7', 'aug7', 'dim7',
-          '9', '11', '13']
-FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
-
-SCALES_INTERVALS = []
-for scale in SCALES:
-  SCALES_INTERVALS.append(Tonal.Scale.intervals(scale).join(' '))
-
-CHORDS_INTERVALS = []
-for chord in CHORDS:
-  CHORDS_INTERVALS.append(Tonal.Chord.intervals(chord).join(' '))
-
-VUE_CONSTANTS = {
-  'NOTES': NOTES,
-  'SCALES': SCALES,
-  'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
-  'FRET_MARKERS': FRET_MARKERS,
-}
 
 
 class Note:
@@ -94,7 +70,7 @@ class NotesCollection:
 
     self.notes = []
     self.all_notes_sorted = []
-    for index, note_str in enumerate(NOTES):
+    for index, note_str in enumerate(constants.NOTES):
       selected = notes_str.includes(note_str)
       interval = Tonal.Distance.interval(self.root.note, note_str)
       if selected:
@@ -233,7 +209,7 @@ class Scale(NotesCollection):
           '{0} {1}'.format(rootNote, mode[1]))
 
     arrays = []
-    for note in NOTES:
+    for note in constants.NOTES:
       if note in self.all_chords:
         arrays.append(self.all_chords[note])
       else:
@@ -277,7 +253,7 @@ class Fretboard:
         note = Note.normalize(Tonal.Distance.transpose(
             openNote, Tonal.Interval.fromSemitones(fret)))
         self.frets[string][fret] = Fret(
-            Note(note), FRET_MARKERS.indexOf(fret) != -1, fret)
+            Note(note), constants.FRET_MARKERS.indexOf(fret) != -1, fret)
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
@@ -310,11 +286,13 @@ class App(object):
     self.chord = Chord()
     self.fretboard = Fretboard()
     self.fretboard.showScale(self.scale)
+    self.app_config = app_config.AppConfig()
 
     # For debugging
     window.s = self.scale
     window.fb = self.fretboard
     window.chord = self.chord
+    window.cfg = self.app_config
 
   def start(self) -> None:
     console.log('python start()')
@@ -330,7 +308,12 @@ class App(object):
           'scale': self.scale,
           'chord': self.chord,
           'fretboard': self.fretboard,
-          'VUE_CONSTANTS': VUE_CONSTANTS,
+          'app_config': self.app_config,
+          'VUE_CONSTANTS': constants.VUE_CONSTANTS,
+        },
+        # Watch for v-model's.
+        'watch': {
+          'app_config.all_chords': self.app_config.test,
         },
       }))
 
