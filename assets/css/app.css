@@ -1,4 +1,10 @@
-#app {
+@font-face {
+  font-family: 'LCD Solid';
+  src: url('../fonts/LCD_Solid.ttf') format('truetype');
+}
+
+body {
+  font-family: 'LCD Solid';
   padding: 2em;
 }
 
@@ -16,6 +22,7 @@
 #scaleSelector table td {
   padding-left: 1em;
   padding-right: 1em;
+  white-space: nowrap;
 }
 
 #scale tr td {
@@ -31,6 +38,7 @@
 #fretboard table td {
   border: none;
   text-align: center;
+  white-space: nowrap;
 }
 
 #fretboard table td.fretnumber {
@@ -68,7 +76,6 @@
 #fretboard table td.note.root.show {
   color: #6200EE;
   font-weight: bold;
-  font-size: 1.2em;
 }
 
 #fretboard table td.note.bluenote.show {
