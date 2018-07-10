@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'LCD Solid';
-  src: url('assets/fonts/LCD_Solid.ttf') format('truetype');
+  src: url('../fonts/LCD_Solid.ttf') format('truetype');
 }
 
 body {
