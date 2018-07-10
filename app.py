@@ -123,13 +123,20 @@ class Scale:
   Attributes:
       root: Note, root note
       scale: str, scale type
-      notes: [Note], list of notes
-      all_notes: [Note], 12 chromatic notes (some selected), used for UI
+
+      notes: List[Note], list of notes
+      all_notes: List[Note], 12 chromatic notes (some selected), used for UI
+
+      chords: [str], possible chords with current root, for suggestion in
+          selector UI
+      all_chords: Dict[str, List[str]], map of notes in scale to possible
+          chords, used to look at chord progressions
+      all_chords_transposed: List[List[str]], transposed all_chords, used for UI
   """
   def __init__(self,
-      root: Note = Note('C', '1P', True),
+      root: str = 'C',
       scale: str = 'ionian') -> None:
-    self.root = root
+    self.root = Note(root, '1P', True)
     self.scale = scale
     self.update()
 
@@ -147,7 +154,8 @@ class Scale:
 
   def update(self):
     """Updates all derived attributes."""
-    tonal_notes_str = Tonal.Scale.notes('{0} {1}'.format(self.root.note, self.scale))
+    scaleNameStr = '{0} {1}'.format(self.root.note, self.scale)
+    tonal_notes_str = Tonal.Scale.notes(scaleNameStr)
     notes_str = []
     for note_str in tonal_notes_str:
       notes_str.append(Note.normalize(note_str))
@@ -160,6 +168,26 @@ class Scale:
       if selected:
         self.notes.append(Note(note_str, interval, selected))
       self.all_notes.append(Note(note_str, interval, selected))
+
+    self.chords = Tonal.Scale.chords(
+        '{0} {1}'.format(self.root.note, self.scale))
+
+    self.all_chords = {}
+    modes = Tonal.Scale.modeNames(scaleNameStr)
+    # TODO: For blues, we only get 2 alternate modes.
+    for mode in modes:
+      rootNote = mode[0]
+      self.all_chords[rootNote] = Tonal.Scale.chords(
+          '{0} {1}'.format(rootNote, mode[1]))
+
+    arrays = []
+    for note in NOTES:
+      if note in self.all_chords:
+        arrays.append(self.all_chords[note])
+      else:
+        # Empty list of chords for notes that are not in scale.
+        arrays.append([])
+    self.all_chords_transposed = transpose(arrays)
 
 
 class Fret:

@@ -19,14 +19,15 @@ body {
   color: #03DAC6;
 }
 
-#scaleSelector table td {
+#selector table td {
   padding-left: 1em;
   padding-right: 1em;
   white-space: nowrap;
 }
 
-#scale tr td {
+#scale td, #scaleChords td {
   padding-right: 1em;
+  text-align: center;
 }
 
 #fretboard table {
