@@ -20,7 +20,7 @@ class Note:
     self.note = self.normalize(note)
     self.intervalToTonic = intervalToTonic
     self.selected = selected
-    self._update()
+    self.update()
 
   def select(self, select: bool = True) -> Note:
     """Marks or unmarks this note as selected."""
@@ -32,7 +32,7 @@ class Note:
     self.intervalToTonic = interval
     return self
 
-  def _update(self) -> None:
+  def update(self) -> None:
     """Updates all derived attributes, such as those used in Vue."""
     pass
 
@@ -61,7 +61,7 @@ class NotesCollection:
     """Gets notes as strings in this particular collection."""
     raise NotImplementedError()
 
-  def _updateNotes(self):
+  def updateNotes(self):
     tonal_notes_str = self._getNotes()
 
     notes_str = []
@@ -96,26 +96,28 @@ class Chord(NotesCollection):
       all_notes_sorted
   """
   def __init__(self,
+      config: app_config.AppConfig,
       root: Note = Note('C', '1P', True),
       chord: str = 'M') -> None:
+    self.config = config
     self.root = root
     self.chord = chord
-    self._update()
+    self.update()
 
   def setRoot(self, root: str) -> Chord:
     self.root = Note(root, '1P', True)
-    self._update()
+    self.update()
     return self
 
   def setChord(self, chord: str) -> Chord:
     self.chord = chord
-    self._update()
+    self.update()
     return self
 
   def setRootAndChord(self, root, chord):
     self.root = Note(root, '1P', True)
     self.chord = chord
-    self._update()
+    self.update()
 
   def _getNotes(self) -> List[str]:
     return Tonal.Chord.notes('{0} {1}'.format(self.root.note, self.chord))
@@ -131,10 +133,10 @@ class Chord(NotesCollection):
         return note.intervalToTonic
     return None
 
-  def _update(self):
+  def update(self):
     """Updates all derived attributes, such as those used in Vue."""
     console.log('updating chord ' + self.root.note + ' ' + self.chord)
-    self._updateNotes()
+    self.updateNotes()
 
 
 class Scale(NotesCollection):
@@ -156,26 +158,28 @@ class Scale(NotesCollection):
       all_notes_sorted
   """
   def __init__(self,
+      config: app_config.AppConfig,
       root: str = 'C',
       scale: str = 'ionian') -> None:
+    self.config = config
     self.root = Note(root, '1P', True)
     self.scale = scale
-    self._update()
+    self.update()
 
   def setRoot(self, note: str) -> Scale:
     self.root = Note(note, '1P', True)
-    self._update()
+    self.update()
     return self
 
   def setScale(self, scale: str) -> Scale:
     self.scale = scale
-    self._update()
+    self.update()
     return self
 
   def setRootAndScale(self, root: str, scale: str) -> None:
     self.root = Note(root, '1P', True)
     self.scale = scale
-    self._update()
+    self.update()
 
   def contains(self, note_to_check: str) -> Optional[str]:
     """Checks if the scale contains the note.
@@ -191,10 +195,10 @@ class Scale(NotesCollection):
   def _getNotes(self) -> List[str]:
     return Tonal.Scale.notes('{0} {1}'.format(self.root.note, self.scale))
 
-  def _update(self):
+  def update(self):
     """Updates all derived attributes."""
     console.log('updating scale ' + self.root.note + ' ' + self.scale)
-    self._updateNotes()
+    self.updateNotes()
 
     scaleNameStr = '{0} {1}'.format(self.root.note, self.scale)
     self.chords = Tonal.Scale.chords(scaleNameStr)
@@ -205,13 +209,18 @@ class Scale(NotesCollection):
     # TODO: It's possible to use Tonal.Detect.chords, but result is pretty fuzzy
     for mode in modes:
       rootNote = mode[0]
-      self.all_chords[rootNote] = Tonal.Scale.chords(
+      chordsForNote = Tonal.Scale.chords(
           '{0} {1}'.format(rootNote, mode[1]))
+      if self.config.simple_chords:
+        chordsForNote = chordsForNote.filter(
+            lambda c: constants.CHORDS_SET.has(c))
+      self.all_chords[rootNote] = chordsForNote
 
+    # Construct transposed array for available chords for each note in scale.
     arrays = []
-    for note in constants.NOTES:
-      if note in self.all_chords:
-        arrays.append(self.all_chords[note])
+    for note in self.all_notes:
+      if note.note in self.all_chords:
+        arrays.append(self.all_chords[note.note])
       else:
         # Empty list of chords for notes that are not in scale.
         arrays.append([])
@@ -240,12 +249,13 @@ class Fretboard:
   """Represents a fretboard.
 
   Attributes:
-    frets: map [string: int][fret: int] -> Note, all frets
-    shownFrets: [Fret], frets currently shown
+    frets: Dict[int, int], map [string][fret] to Note, representing all frets
+    shownFrets: List[Fret], frets currently shown
   """
-  def __init__(self):
-    self.shownFrets = []
-    self.frets = {}
+  def __init__(self, config: app_config.AppConfig) -> None:
+    self.config = config
+    self.shownFrets = []  # type: List[Fret]
+    self.frets = {}  # type: Dict[int, int]
     openNotes = ['E', 'B', 'G', 'D', 'A', 'E']
     for string, openNote in enumerate(openNotes):
       self.frets[string] = {}
@@ -253,7 +263,7 @@ class Fretboard:
         note = Note.normalize(Tonal.Distance.transpose(
             openNote, Tonal.Interval.fromSemitones(fret)))
         self.frets[string][fret] = Fret(
-            Note(note), constants.FRET_MARKERS.indexOf(fret) != -1, fret)
+            Note(note), constants.FRET_MARKERS_SET.has(fret), fret)
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
@@ -281,22 +291,25 @@ class Fretboard:
 
 
 class App(object):
-  def __init__(self):
-    self.scale = Scale()
-    self.chord = Chord()
-    self.fretboard = Fretboard()
+  def __init__(self) -> None:
+    self.config = app_config.AppConfig()
+    self.scale = Scale(self.config)
+    self.chord = Chord(self.config)
+    self.fretboard = Fretboard(self.config)
     self.fretboard.showScale(self.scale)
-    self.app_config = app_config.AppConfig()
 
     # For debugging
     window.s = self.scale
     window.fb = self.fretboard
     window.chord = self.chord
-    window.cfg = self.app_config
+    window.config = self.config
 
   def start(self) -> None:
     console.log('python start()')
     self.initVue()
+
+  def onChangeOptionSimpleChords(self):
+    self.scale.update()
 
   def initVue(self) -> None:
     # (#15) Workaround.
@@ -308,12 +321,12 @@ class App(object):
           'scale': self.scale,
           'chord': self.chord,
           'fretboard': self.fretboard,
-          'app_config': self.app_config,
+          'config': self.config,
           'VUE_CONSTANTS': constants.VUE_CONSTANTS,
         },
         # Watch for v-model's.
         'watch': {
-          'app_config.all_chords': self.app_config.test,
+          'config.simple_chords': self.onChangeOptionSimpleChords,
         },
       }))
 

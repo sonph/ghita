@@ -20,14 +20,14 @@ html(lang='en')
   body
     #app
       #settingsBtn.selectable.clickable(
-        v-on:click="app_config.toggleSettings()") Options
+        v-on:click="config.toggleSettings()") Options
 
-      #settings(v-if="app_config.open_settings")
+      #settings(v-if="config.open_settings")
         h3 Options
 
         div
-          input(type="checkbox" id="checkbox" v-model="app_config.all_chords")
-          label(for="checkbox")  Show all chords
+          input(type="checkbox" id="checkbox" v-model="config.simple_chords")
+          label(for="checkbox")  Show simple chords only
 
       #main
         h3 Fretboard
@@ -106,7 +106,7 @@ html(lang='en')
               ) {{ row[2] }}
 
               //- Chords in column 3
-              td.selectable.clickable(
+              td.selectable.clickable.alternate(
                   v-if="row[3]"
                   v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
                   v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
@@ -114,7 +114,7 @@ html(lang='en')
               td(v-else)
 
               //- Chord intervals in column 4
-              td.selectable.clickable(
+              td.selectable.clickable.alternate(
                   v-if="row[4]"
                   v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
                   v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
@@ -129,13 +129,13 @@ html(lang='en')
           table
             tr
               td.selectable(
-                  v-for="note in scale.all_notes_sorted"
+                  v-for="note in scale.all_notes"
                   v-bind:class="{ selected: note.selected, }"
               ) {{ note.note }}
             tr(v-for="chord_names in scale.all_chords_transposed")
               //- index used to identify root note for chord.
-              td.selectable.clickable(
+              td.selectable.clickable.alternate(
                   v-for="(chord_name, index) in chord_names"
-                  v-bind:class="{ selected: chord.root.note == VUE_CONSTANTS.NOTES[index] && chord.chord == chord_name }"
-                  v-on:click="chord.setRoot(VUE_CONSTANTS.NOTES[index]).setChord(chord_name)"
+                  v-bind:class="{ selected: chord.root.note == scale.all_notes[index].note && chord.chord == chord_name }"
+                  v-on:click="chord.setRoot(scale.all_notes[index].note).setChord(chord_name)"
               ) {{ chord_name }}
