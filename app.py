@@ -1,24 +1,29 @@
-from typing import List, Any, Optional
+from typing import Any, Dict, List, Optional, Callable
 
 import app_config
 import constants
 import utils
 
 
+__pragma__('skip')
+# Hack to ignore static check errors on objects included at runtime.
+__pragma__ = Tonal = window = console = Set = Vue = __new__ = object()  # type: Any
+__pragma__('noskip')
+
 class Note:
   """Represents a note.
 
   Attributes:
       note: str, string representation
-      intervalToTonic: str, interval to tonic, if this note is in a scale
+      interval_to_tonic: str, interval to tonic, if this note is in a scale
       selected: bool, this note is selected
   """
   def __init__(self,
       note: str,
-      intervalToTonic: str = None,
+      interval_to_tonic: str = None,
       selected: bool = False) -> None:
     self.note = self.normalize(note)
-    self.intervalToTonic = intervalToTonic
+    self.interval_to_tonic = interval_to_tonic
     self.selected = selected
     self.update()
 
@@ -29,7 +34,7 @@ class Note:
 
   def interval(self, interval: str = None) -> Note:
     """Sets interval relative to tonic."""
-    self.intervalToTonic = interval
+    self.interval_to_tonic = interval
     return self
 
   def update(self) -> None:
@@ -130,7 +135,7 @@ class Chord(NotesCollection):
     """
     for note in self.notes:
       if note_to_check == note.note:
-        return note.intervalToTonic
+        return note.interval_to_tonic
     return None
 
   def update(self):
@@ -189,7 +194,7 @@ class Scale(NotesCollection):
     """
     for note in self.notes:
       if note_to_check == note.note:
-        return note.intervalToTonic
+        return note.interval_to_tonic
     return None
 
   def _getNotes(self) -> List[str]:
@@ -233,35 +238,35 @@ class Fret:
   Attributes:
     note: Note, note
     marker: bool, if this has a fret marker
-    fretStr: str, string to show on fretboard
-    fretNumber: int, fret number
+    fret_number: int, fret number
   """
   def __init__(self,
       note: Note,
       marker: bool,
-      fretNumber: int) -> None:
+      fret_number: int) -> None:
     self.note = note
     self.marker = marker
-    self.fretNumber = fretNumber
+    self.fret_number = fret_number
 
 
 class Fretboard:
   """Represents a fretboard.
 
   Attributes:
-    frets: Dict[int, int], map [string][fret] to Note, representing all frets
-    shownFrets: List[Fret], frets currently shown
+    frets: Dict[int, Dict[int, Fret]], map [string][fret] to Note, representing
+        all frets
+    shown_frets: List[Fret], frets currently shown
   """
   def __init__(self, config: app_config.AppConfig) -> None:
     self.config = config
-    self.shownFrets = []  # type: List[Fret]
-    self.frets = {}  # type: Dict[int, int]
-    openNotes = ['E', 'B', 'G', 'D', 'A', 'E']
-    for string, openNote in enumerate(openNotes):
+    self.shown_frets = []  # type: List[Fret]
+    self.frets = {}  # type: Dict[int, Dict[int, Fret]]
+    open_notes = constants.GUITAR_OPEN_STRINGS
+    for string, open_note in enumerate(open_notes):
       self.frets[string] = {}
       for fret in range(22):
         note = Note.normalize(Tonal.Distance.transpose(
-            openNote, Tonal.Interval.fromSemitones(fret)))
+            open_note, Tonal.Interval.fromSemitones(fret)))
         self.frets[string][fret] = Fret(
             Note(note), constants.FRET_MARKERS_SET.has(fret), fret)
 
@@ -276,18 +281,17 @@ class Fretboard:
 
     for string in range(6):
       for fret in range(22):
-        # Testing a string in a list of strings.
-        # Try testing a Note object in a list of Notes instead.
+        # indexOf does not work for a List[Note] and Note
         index = notes_str.indexOf(self.frets[string][fret].note.note)
         if index != -1:
           self.frets[string][fret].note.select().interval(
-              scale.notes[index].intervalToTonic)
-          self.shownFrets.append(self.frets[string][fret])
+              scale.notes[index].interval_to_tonic)
+          self.shown_frets.append(self.frets[string][fret])
 
   def reset(self):
-    for fret in self.shownFrets:
+    for fret in self.shown_frets:
       fret.note.select(False).interval(None)
-    self.shownFrets = []
+    self.shown_frets = []
 
 
 class App(object):
@@ -297,12 +301,6 @@ class App(object):
     self.chord = Chord(self.config)
     self.fretboard = Fretboard(self.config)
     self.fretboard.showScale(self.scale)
-
-    # For debugging
-    window.s = self.scale
-    window.fb = self.fretboard
-    window.chord = self.chord
-    window.config = self.config
 
   def start(self) -> None:
     console.log('python start()')
@@ -322,6 +320,7 @@ class App(object):
           'chord': self.chord,
           'fretboard': self.fretboard,
           'config': self.config,
+          'Tonal': Tonal,
           'VUE_CONSTANTS': constants.VUE_CONSTANTS,
         },
         # Watch for v-model's.

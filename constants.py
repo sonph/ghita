@@ -1,4 +1,10 @@
+from typing import Any
 import utils
+
+__pragma__('skip')
+# Hack to ignore static check errors on objects included at runtime.
+__pragma__ = __new__ = Set = object()  # type: Any
+__pragma__('noskip')
 
 NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 NOTES_SET = __new__(Set(NOTES))
@@ -30,13 +36,7 @@ CHORDS_SET = __new__(Set(CHORDS))
 FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
 FRET_MARKERS_SET = __new__(Set(FRET_MARKERS))
 
-SCALES_INTERVALS = []
-for scale in SCALES:
-  SCALES_INTERVALS.append(Tonal.Scale.intervals(scale).join(' '))
-
-CHORDS_INTERVALS = []
-for chord in CHORDS:
-  CHORDS_INTERVALS.append(Tonal.Chord.intervals(chord).join(' '))
+GUITAR_OPEN_STRINGS = ['E', 'A', 'D', 'G', 'B', 'E']
 
 VUE_CONSTANTS = {
   'NOTES': NOTES,
@@ -45,7 +45,7 @@ VUE_CONSTANTS = {
   'SCALES_SET': SCALES_SET,
   'FRET_MARKERS': FRET_MARKERS,
   'FRET_MARKERS_SET': FRET_MARKERS_SET,
-  'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, SCALES_INTERVALS, CHORDS, CHORDS_INTERVALS]),
+  'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, CHORDS]),
 }
 
 
