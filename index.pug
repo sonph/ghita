@@ -36,7 +36,7 @@ html(lang='en')
             //- Fret number indicators
             tr
               td.fretnumber(v-for="fret in fretboard.frets[0]")
-                span(v-if="VUE_CONSTANTS.FRET_MARKERS.includes(fret.fretNumber)") {{ fret.fretNumber }}
+                span(v-if="VUE_CONSTANTS.FRET_MARKERS_SET.has(fret.fretNumber)") {{ fret.fretNumber }}
             //- Fretboard
             tr(v-for="string in fretboard.frets")
               td.note(
@@ -99,26 +99,26 @@ html(lang='en')
               ) {{ row[1] }}
               td(v-else)
 
-              //- Scale intervals in column 2
-              td.selectable.clickable(v-if="row[2]"
+              //- Scale intervals
+              td.selectable.clickable(v-if="row[1]"
                   v-bind:class="{ selected: scale.scale == row[1]}"
                   v-on:click="scale.setScale(row[1]); fretboard.showScale(scale)"
-              ) {{ row[2] }}
+              ) {{ Tonal.Scale.intervals(row[1]).join(' ') }}
 
-              //- Chords in column 3
+              //- Chords in column 2
               td.selectable.clickable.alternate(
-                  v-if="row[3]"
-                  v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
-                  v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
-              ) {{ row[3] }}
+                  v-if="row[2]"
+                  v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[2] }"
+                  v-on:click="chord.setRootAndChord(scale.root.note, row[2])"
+              ) {{ row[2] }}
               td(v-else)
 
-              //- Chord intervals in column 4
+              //- Chord intervals
               td.selectable.clickable.alternate(
-                  v-if="row[4]"
-                  v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[3] }"
-                  v-on:click="chord.setRootAndChord(scale.root.note, row[3])"
-                  ) {{ row[4] }}
+                  v-if="row[2]"
+                  v-bind:class="{ selected: chord.root.note == scale.root.note && chord.chord == row[2] }"
+                  v-on:click="chord.setRootAndChord(scale.root.note, row[2])"
+                  ) {{ Tonal.Chord.intervals(row[2]).join(' ') }}
               td(v-else)
 
         br

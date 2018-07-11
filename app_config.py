@@ -9,6 +9,3 @@ class AppConfig:
 
   def toggleSettings(self):
     self.open_settings = not self.open_settings
-
-  def test(self):
-    console.log(self.all_chords)

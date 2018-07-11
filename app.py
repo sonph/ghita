@@ -322,6 +322,7 @@ class App(object):
           'chord': self.chord,
           'fretboard': self.fretboard,
           'config': self.config,
+          'Tonal': Tonal,
           'VUE_CONSTANTS': constants.VUE_CONSTANTS,
         },
         # Watch for v-model's.
