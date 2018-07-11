@@ -1,9 +1,14 @@
-from typing import List, Any, Optional
+from typing import Any, Dict, List, Optional, Callable
 
 import app_config
 import constants
 import utils
 
+
+__pragma__('skip')
+# Hack to ignore static check errors on objects included at runtime.
+__pragma__ = Tonal = window = console = Set = Vue = __new__ = object()  # type: Any
+__pragma__('noskip')
 
 class Note:
   """Represents a note.
@@ -248,14 +253,15 @@ class Fretboard:
   """Represents a fretboard.
 
   Attributes:
-    frets: Dict[int, int], map [string][fret] to Note, representing all frets
+    frets: Dict[int, Dict[int, Fret]], map [string][fret] to Note, representing
+        all frets
     shown_frets: List[Fret], frets currently shown
   """
   def __init__(self, config: app_config.AppConfig) -> None:
     self.config = config
     self.shown_frets = []  # type: List[Fret]
-    self.frets = {}  # type: Dict[int, int]
-    open_notes = ['E', 'B', 'G', 'D', 'A', 'E']
+    self.frets = {}  # type: Dict[int, Dict[int, Fret]]
+    open_notes = constants.GUITAR_OPEN_STRINGS
     for string, open_note in enumerate(open_notes):
       self.frets[string] = {}
       for fret in range(22):
@@ -295,12 +301,6 @@ class App(object):
     self.chord = Chord(self.config)
     self.fretboard = Fretboard(self.config)
     self.fretboard.showScale(self.scale)
-
-    # For debugging
-    window.s = self.scale
-    window.fb = self.fretboard
-    window.chord = self.chord
-    window.config = self.config
 
   def start(self) -> None:
     console.log('python start()')
