@@ -38,7 +38,14 @@ body {
 #fretboard table {
   border-spacing: 0px 3px;
   table-layout: fixed;
+}
+
+#fretboard table.guitar {
   width: 1600px;
+}
+
+#fretboard table.ukulele {
+  width: 900px;
 }
 
 #fretboard table td {
@@ -71,7 +78,7 @@ body {
 
 /* Nut */
 #fretboard table td.note:first-child {
-  border-right: 2px solid #999;
+  border-right: 3px solid #999;
 }
 
 /* Last fret */

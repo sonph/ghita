@@ -33,19 +33,32 @@ CHORDS = [
 ]
 CHORDS_SET = __new__(Set(CHORDS))
 
-FRET_MARKERS = [0, 3, 5, 7, 9, 12, 15, 17, 19]
-FRET_MARKERS_SET = __new__(Set(FRET_MARKERS))
+GUITAR = {
+  'FRETS': 23,  # +1 for open fret
+  'OPEN_NOTES': ['E', 'B', 'G', 'D', 'A', 'E'],
+  'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 9, 12, 15, 17, 19]))
+}
 
-GUITAR_OPEN_STRINGS = ['E', 'A', 'D', 'G', 'B', 'E']
+UKULELE = {
+  'FRETS': 13,  # +1 for open fret
+  'OPEN_NOTES': ['A', 'E', 'C', 'G'],
+  'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 10, 12]))
+}
+
+INSTRUMENTS = [
+  {'value': 'guitar',
+  'text': 'Guitar (EADGBE)'},
+  {'value': 'ukulele',
+  'text': 'Ukulele (GCEA)'},
+]
 
 VUE_CONSTANTS = {
   'NOTES': NOTES,
   'NOTES_SET': NOTES_SET,
   'SCALES': SCALES,
   'SCALES_SET': SCALES_SET,
-  'FRET_MARKERS': FRET_MARKERS,
-  'FRET_MARKERS_SET': FRET_MARKERS_SET,
   'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, CHORDS]),
+  'INSTRUMENTS': INSTRUMENTS,
 }
 
 

@@ -29,14 +29,29 @@ html(lang='en')
           input(type='checkbox' id='checkbox' v-model='config.simple_chords')
           label(for='checkbox')  Show simple chords only
 
+        div
+          fieldset
+            legend Instrument
+            div(v-for='instrument in VUE_CONSTANTS.INSTRUMENTS')
+              input(
+                  type='radio'
+                  v-bind:id='"instrumentSelect" + instrument.value' 
+                  v-model="config.instrument"
+                  v-bind:value='instrument.value')
+              label(v-bind:for='"instrumentSelect" + instrument.value')
+                | {{ instrument.text }} 
+
       #main
         h3 Fretboard
         #fretboard
-          table
+          table(v-bind:class='{ ' +
+              'guitar: config.instrument == "guitar", ' +
+              'ukulele: config.instrument == "ukulele", ' +
+              '}')
             //- Fret number indicators
             tr
               td.fretnumber(v-for='fret in fretboard.frets[0]')
-                span(v-if='VUE_CONSTANTS.FRET_MARKERS_SET.has(fret.fret_number)') {{ fret.fret_number }}
+                span(v-if='fret.marker') {{ fret.fret_number }}
             //- Fretboard
             tr(v-for='string in fretboard.frets')
               td.note(

@@ -253,22 +253,31 @@ class Fretboard:
   """Represents a fretboard.
 
   Attributes:
+    instrument_config: Dict[str, Any], instrument config in constants module
     frets: Dict[int, Dict[int, Fret]], map [string][fret] to Note, representing
         all frets
     shown_frets: List[Fret], frets currently shown
   """
   def __init__(self, config: app_config.AppConfig) -> None:
     self.config = config
+    self.update()
+
+  def update(self):
     self.shown_frets = []  # type: List[Fret]
     self.frets = {}  # type: Dict[int, Dict[int, Fret]]
-    open_notes = constants.GUITAR_OPEN_STRINGS
-    for string, open_note in enumerate(open_notes):
+
+    if self.config.instrument == 'guitar':
+      self.instrument_config = constants.GUITAR
+    elif self.config.instrument == 'ukulele':
+      self.instrument_config = constants.UKULELE
+
+    for string, open_note in enumerate(self.instrument_config['OPEN_NOTES']):
       self.frets[string] = {}
-      for fret in range(22):
+      for fret in range(self.instrument_config['FRETS']):
         note = Note.normalize(Tonal.Distance.transpose(
             open_note, Tonal.Interval.fromSemitones(fret)))
         self.frets[string][fret] = Fret(
-            Note(note), constants.FRET_MARKERS_SET.has(fret), fret)
+            Note(note), self.instrument_config['FRET_MARKERS'].has(fret), fret)
 
   def showScale(self, scale: Scale):
     """Shows notes in this scale on the fretboard."""
@@ -279,8 +288,8 @@ class Fretboard:
     for note in scale.notes:
       notes_str.append(note.note)
 
-    for string in range(6):
-      for fret in range(22):
+    for string in range(len(self.instrument_config['OPEN_NOTES'])):
+      for fret in range(self.instrument_config['FRETS']):
         # indexOf does not work for a List[Note] and Note
         index = notes_str.indexOf(self.frets[string][fret].note.note)
         if index != -1:
@@ -307,7 +316,13 @@ class App(object):
     self.initVue()
 
   def onChangeOptionSimpleChords(self):
+    console.log('Simple chords: ' + self.config.simple_chords)
     self.scale.update()
+
+  def onChangeOptionsInstrument(self):
+    console.log('Selected instrument: ' + self.config.instrument)
+    self.fretboard.update()
+    self.fretboard.showScale(self.scale)
 
   def initVue(self) -> None:
     # (#15) Workaround.
@@ -326,6 +341,7 @@ class App(object):
         # Watch for v-model's.
         'watch': {
           'config.simple_chords': self.onChangeOptionSimpleChords,
+          'config.instrument': self.onChangeOptionsInstrument,
         },
       }))
 
