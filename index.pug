@@ -19,6 +19,23 @@ html(lang='en')
     script(type='text/javascript' src='./app.min.js')
   body
     #app
+      #quicklist(v-if='quicklist.visible')
+        div.right Quick access list
+        ul
+          li(v-for='(col, index) in quicklist.collections')
+            span.clickable(
+                v-on:click='quicklist.remove(index)'
+                v-bind:title='"Remove " + col[0]'
+            ) X
+            span.clickable(
+                v-on:click='col[0] == "scale" ? ' +
+                    'scale.setRootAndScale(col[1], col[2]) : ' +
+                    'chord.setRootAndChord(col[1], col[2])'
+            )  {{ quicklist.displayStr(col) }}
+          span.clickable(
+              v-on:click='quicklist.clearAll()'
+              title="Clear list") clear
+
       #settingsBtn.selectable.clickable(
         v-on:click='config.toggleSettings()') Options
 
@@ -80,6 +97,10 @@ html(lang='en')
                         'selected: note.selected, ' +
                         ' }'
                 ) {{ note.note }}
+                td.clickable(
+                    v-on:click='quicklist.add(["scale", scale.root.note, scale.scale])'
+                    title='Add scale to quick access list'
+                ) +
               tr
                 td.selectable(
                     v-for='note in scale.all_notes'
@@ -87,7 +108,6 @@ html(lang='en')
                         'selected: note.selected, ' +
                         '}'
                 ) {{ note.interval_to_tonic }}
-
           br
           div Chord
             table
@@ -98,6 +118,10 @@ html(lang='en')
                         'selected: note.selected, ' +
                         ' }'
                 ) {{ note.note }}
+                td.clickable(
+                    v-on:click='quicklist.add(["chord", chord.root.note, chord.chord])'
+                    title='Add chord to quick access list'
+                ) +
               tr
                 td.selectable.alternate(
                     v-for='note in chord.all_notes'
@@ -105,6 +129,7 @@ html(lang='en')
                         'selected: note.selected, ' +
                         '}'
                 ) {{ note.interval_to_tonic }}
+
 
         br
         br
