@@ -119,27 +119,27 @@ html(lang='en')
               //- Root notes in column 0
               td.selectable.clickable(v-if='row[0]'
                   v-bind:class='{ selected: scale.root.note == row[0]}'
-                  v-on:click='scale.setRoot(row[0]); fretboard.showScale(scale)'
+                  v-on:click='scale.setRoot(row[0]); fretboard.showNotes(scale)'
               ) {{ row[0] }}
               td(v-else)
 
               //- Scales in column 1
               td.selectable.clickable(v-if='row[1]'
                   v-bind:class='{ selected: scale.scale == row[1]}'
-                  v-on:click='scale.setScale(row[1]); fretboard.showScale(scale)'
+                  v-on:click='scale.setScale(row[1]); fretboard.showNotes(scale)'
               ) {{ row[1] }}
               td(v-else)
 
               //- Scale intervals
               td.selectable.clickable(v-if='row[1]'
                   v-bind:class='{ selected: scale.scale == row[1]}'
-                  v-on:click='scale.setScale(row[1]); fretboard.showScale(scale)'
+                  v-on:click='scale.setScale(row[1]); fretboard.showNotes(scale)'
               ) {{ Tonal.Scale.intervals(row[1]).join(' ') }}
 
               //- Root notes
               td.selectable.clickable.alternate(v-if='row[0]'
                   v-bind:class='{ selected: chord.root.note == row[0]}'
-                  v-on:click='chord.setRoot(row[0]); fretboard.showChord(chord)'
+                  v-on:click='chord.setRoot(row[0]); fretboard.showNotes(chord)'
               ) {{ row[0] }}
               td(v-else)
 
@@ -147,7 +147,7 @@ html(lang='en')
               td.selectable.clickable.alternate(
                   v-if='row[2]'
                   v-bind:class='{ selected: chord.chord == row[2] }'
-                  v-on:click='chord.setChord(row[2])'
+                  v-on:click='chord.setChord(row[2]); fretboard.showNotes(chord)'
               ) {{ row[2] }}
               td(v-else)
 
@@ -155,7 +155,7 @@ html(lang='en')
               td.selectable.clickable.alternate(
                   v-if='row[2]'
                   v-bind:class='{ selected: chord.chord == row[2] }'
-                  v-on:click='chord.setChord(row[2])'
+                  v-on:click='chord.setChord(row[2]); fretboard.showNotes(chord)'
                   ) {{ Tonal.Chord.intervals(row[2]).join(' ') }}
               td(v-else)
 

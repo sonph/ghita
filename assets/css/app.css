@@ -4,7 +4,8 @@
 }
 
 body {
-  font-family: 'LCD Solid';
+  font-family: monospace;
+  font-size: 15px;
   padding: 2em;
 }
 
