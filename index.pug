@@ -27,10 +27,11 @@ html(lang='en')
                 v-on:click='quicklist.remove(index)'
                 v-bind:title='"Remove " + col[0]'
             ) X
+            //- TODO: Should move this v-on:click into a function. This is a quick fix.
             span.clickable(
-                v-on:click='col[0] == "scale" ? ' +
-                    'scale.setRootAndScale(col[1], col[2]) : ' +
-                    'chord.setRootAndChord(col[1], col[2])'
+                v-on:click='if (col[0] == "scale") {' +
+                    'scale.setRootAndScale(col[1], col[2]); fretboard.showNotes(scale); } else {' +
+                    'chord.setRootAndChord(col[1], col[2]); fretboard.showNotes(chord); }'
             )  {{ quicklist.displayStr(col) }}
           span.clickable(
               v-on:click='quicklist.clearAll()'
