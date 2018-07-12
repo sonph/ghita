@@ -30,7 +30,7 @@ body {
   white-space: nowrap;
 }
 
-#scale td, #scaleChords td {
+#notes td, #scaleChords td {
   padding-right: 1em;
   text-align: center;
 }
