@@ -302,6 +302,44 @@ class Fretboard:
     self.shown_frets = []
 
 
+class QuickList:
+  """Quick access list of scales, chords, etc.
+
+  Attributes:
+    visible: bool
+    collections: List[List[str]]
+    len: int, number of items in the list
+  """
+  def __init__(self) -> None:
+    # TODO: Use some sort of ordered set instead.
+    # TODO: Make Chord and Scale immutable, then we can simply store the
+    # instances. Currently they're mutable so we have to store the strings.
+    self.collections = []  # type: List[List[str]]
+    self.update()
+
+  def add(self, collection: List[str]) -> None:
+    self.collections.append(collection)
+    self.update()
+
+  def remove(self, index: int) -> None:
+    """Removes indexed collection."""
+    self.collections.splice(index, 1)
+    self.update()
+
+  def clearAll(self) -> None:
+    self.collections = []
+    self.update()
+
+  def update(self):
+    """Updates derived attributes."""
+    self.len = len(self.collections)
+    self.visible = self.len > 0
+
+  def displayStr(self, collection: List[str]) -> str:
+    """Converts to a string for display in UI."""
+    return '{0} {1} {2}'.format(collection[0], collection[1], collection[2])
+
+
 class App(object):
   def __init__(self) -> None:
     self.config = app_config.AppConfig()
@@ -309,6 +347,7 @@ class App(object):
     self.chord = Chord(self.config)
     self.fretboard = Fretboard(self.config)
     self.fretboard.showNotes(self.scale)
+    self.quicklist = QuickList()
 
   def start(self) -> None:
     console.log('python start()')
@@ -334,6 +373,7 @@ class App(object):
           'chord': self.chord,
           'fretboard': self.fretboard,
           'config': self.config,
+          'quicklist': self.quicklist,
           'Tonal': Tonal,
           'VUE_CONSTANTS': constants.VUE_CONSTANTS,
         },

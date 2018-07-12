@@ -99,3 +99,17 @@ body {
 #fretboard table td.note.show {
   color: #333;
 }
+
+#quicklist {
+  position: fixed;
+  right: 1em;
+  bottom: 1em;
+}
+
+#quicklist ul {
+  list-style-type: none;
+}
+
+#quicklist .right {
+  text-align: right;
+}
