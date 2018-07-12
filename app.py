@@ -279,13 +279,12 @@ class Fretboard:
         self.frets[string][fret] = Fret(
             Note(note), self.instrument_config['FRET_MARKERS'].has(fret), fret)
 
-  def showScale(self, scale: Scale):
-    """Shows notes in this scale on the fretboard."""
+  def showNotes(self, notes_collection: NotesCollection):
+    """Shows notes in this collection on the fretboard."""
     self.reset()
 
-    notes = scale.notes
     notes_str = []
-    for note in scale.notes:
+    for note in notes_collection.notes:
       notes_str.append(note.note)
 
     for string in range(len(self.instrument_config['OPEN_NOTES'])):
@@ -294,7 +293,7 @@ class Fretboard:
         index = notes_str.indexOf(self.frets[string][fret].note.note)
         if index != -1:
           self.frets[string][fret].note.select().interval(
-              scale.notes[index].interval_to_tonic)
+              notes_collection.notes[index].interval_to_tonic)
           self.shown_frets.append(self.frets[string][fret])
 
   def reset(self):
@@ -309,7 +308,7 @@ class App(object):
     self.scale = Scale(self.config)
     self.chord = Chord(self.config)
     self.fretboard = Fretboard(self.config)
-    self.fretboard.showScale(self.scale)
+    self.fretboard.showNotes(self.scale)
 
   def start(self) -> None:
     console.log('python start()')
@@ -322,7 +321,7 @@ class App(object):
   def onChangeOptionsInstrument(self):
     console.log('Selected instrument: ' + self.config.instrument)
     self.fretboard.update()
-    self.fretboard.showScale(self.scale)
+    self.fretboard.showNotes(self.scale)
 
   def initVue(self) -> None:
     # (#15) Workaround.

@@ -70,24 +70,41 @@ html(lang='en')
         br
 
         h3 Notes
-        #scale
-          table
-            tr
-              td.selectable(
-                  v-for='note in scale.all_notes'
-                  v-bind:class='{ ' +
-                      'selected: note.selected, ' +
-                      'alternate: chord.contains(note.note), ' +
-                      ' }'
-              ) {{ note.note }}
-            tr
-              td.selectable(
-                  v-for='note in scale.all_notes'
-                  v-bind:class='{ ' +
-                      'selected: note.selected, ' +
-                      'alternate: chord.contains(note.note), ' +
-                      '}'
-              ) {{ note.interval_to_tonic }}
+        #notes
+          div Scale
+            table
+              tr
+                td.selectable(
+                    v-for='note in scale.all_notes'
+                    v-bind:class='{ ' +
+                        'selected: note.selected, ' +
+                        ' }'
+                ) {{ note.note }}
+              tr
+                td.selectable(
+                    v-for='note in scale.all_notes'
+                    v-bind:class='{ ' +
+                        'selected: note.selected, ' +
+                        '}'
+                ) {{ note.interval_to_tonic }}
+
+          br
+          div Chord
+            table
+              tr
+                td.selectable.alternate(
+                    v-for='note in chord.all_notes'
+                    v-bind:class='{ ' +
+                        'selected: note.selected, ' +
+                        ' }'
+                ) {{ note.note }}
+              tr
+                td.selectable.alternate(
+                    v-for='note in chord.all_notes'
+                    v-bind:class='{ ' +
+                        'selected: note.selected, ' +
+                        '}'
+                ) {{ note.interval_to_tonic }}
 
         br
         br
@@ -96,43 +113,49 @@ html(lang='en')
         #selector
           table
             tr
-              td Root
-              td(colspan='2') Scale
-              td(colspan='2') Chord
+              td(colspan='3') Scale
+              td(colspan='3') Chord
             tr(v-for='row in VUE_CONSTANTS.SCALE_SELECTORS')
               //- Root notes in column 0
               td.selectable.clickable(v-if='row[0]'
                   v-bind:class='{ selected: scale.root.note == row[0]}'
-                  v-on:click='scale.setRoot(row[0]); fretboard.showScale(scale)'
+                  v-on:click='scale.setRoot(row[0]); fretboard.showNotes(scale)'
               ) {{ row[0] }}
               td(v-else)
 
               //- Scales in column 1
               td.selectable.clickable(v-if='row[1]'
                   v-bind:class='{ selected: scale.scale == row[1]}'
-                  v-on:click='scale.setScale(row[1]); fretboard.showScale(scale)'
+                  v-on:click='scale.setScale(row[1]); fretboard.showNotes(scale)'
               ) {{ row[1] }}
               td(v-else)
 
               //- Scale intervals
               td.selectable.clickable(v-if='row[1]'
                   v-bind:class='{ selected: scale.scale == row[1]}'
-                  v-on:click='scale.setScale(row[1]); fretboard.showScale(scale)'
+                  v-on:click='scale.setScale(row[1]); fretboard.showNotes(scale)'
               ) {{ Tonal.Scale.intervals(row[1]).join(' ') }}
+
+              //- Root notes
+              td.selectable.clickable.alternate(v-if='row[0]'
+                  v-bind:class='{ selected: chord.root.note == row[0]}'
+                  v-on:click='chord.setRoot(row[0]); fretboard.showNotes(chord)'
+              ) {{ row[0] }}
+              td(v-else)
 
               //- Chords in column 2
               td.selectable.clickable.alternate(
                   v-if='row[2]'
-                  v-bind:class='{ selected: chord.root.note == scale.root.note && chord.chord == row[2] }'
-                  v-on:click='chord.setRootAndChord(scale.root.note, row[2])'
+                  v-bind:class='{ selected: chord.chord == row[2] }'
+                  v-on:click='chord.setChord(row[2]); fretboard.showNotes(chord)'
               ) {{ row[2] }}
               td(v-else)
 
               //- Chord intervals
               td.selectable.clickable.alternate(
                   v-if='row[2]'
-                  v-bind:class='{ selected: chord.root.note == scale.root.note && chord.chord == row[2] }'
-                  v-on:click='chord.setRootAndChord(scale.root.note, row[2])'
+                  v-bind:class='{ selected: chord.chord == row[2] }'
+                  v-on:click='chord.setChord(row[2]); fretboard.showNotes(chord)'
                   ) {{ Tonal.Chord.intervals(row[2]).join(' ') }}
               td(v-else)
 
@@ -151,6 +174,8 @@ html(lang='en')
               //- index used to identify root note for chord.
               td.selectable.clickable.alternate(
                   v-for='(chord_name, index) in chord_names'
-                  v-bind:class='{ selected: chord.root.note == scale.all_notes[index].note && chord.chord == chord_name }'
+                  v-bind:class='{ ' +
+                      'selected: chord.root.note == scale.all_notes[index].note ' +
+                      '&& chord.chord == chord_name }'
                   v-on:click='chord.setRoot(scale.all_notes[index].note).setChord(chord_name)'
               ) {{ chord_name }}
