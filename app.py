@@ -54,6 +54,7 @@ class NotesCollection:
   """Collection of notes.
 
   Attributes:
+      type: str, 'chord' or 'scale'
       notes: List[Note], list of notes
       all_notes_sorted: List[Note], 12 chromatic notes (some selected),
           starting from A
@@ -96,14 +97,18 @@ class Chord(NotesCollection):
       chord: str, chord type
 
     inherited from NotesCollection:
+      type
       notes
       all_notes
       all_notes_sorted
   """
+  TYPE = 'chord'
+
   def __init__(self,
       config: app_config.AppConfig,
       root: Note = Note('C', '1P', True),
       chord: str = 'M') -> None:
+    self.type = self.TYPE
     self.config = config
     self.root = root
     self.chord = chord
@@ -158,14 +163,18 @@ class Scale(NotesCollection):
       all_chords_transposed: List[List[str]], transposed all_chords, used for UI
 
     inherited from NotesCollection:
+      type
       notes
       all_notes
       all_notes_sorted
   """
+  TYPE = 'scale'
+
   def __init__(self,
       config: app_config.AppConfig,
       root: str = 'C',
       scale: str = 'ionian') -> None:
+    self.type = self.TYPE
     self.config = config
     self.root = Note(root, '1P', True)
     self.scale = scale
@@ -362,6 +371,18 @@ class App(object):
     self.fretboard.update()
     self.fretboard.showNotes(self.scale)
 
+  # TODO: prefer not to expose this function through 'methods'. Move this into
+  # the quicklist object or something.
+  def onQuicklistSelect(self, index: int) -> None:
+    col = self.quicklist.collections[index]
+    if col[0] == 'scale':
+      self.scale.setRootAndScale(col[1], col[2])
+      self.fretboard.showNotes(self.scale)
+    elif col[0] == 'chord':
+      self.chord.setRootAndChord(col[1], col[2])
+      self.fretboard.showNotes(self.chord)
+
+
   def initVue(self) -> None:
     # (#15) Workaround.
     if not window.vue_loaded:
@@ -381,6 +402,10 @@ class App(object):
         'watch': {
           'config.simple_chords': self.onChangeOptionSimpleChords,
           'config.instrument': self.onChangeOptionsInstrument,
+        },
+        'methods': {
+          # TODO: move these into quicklist or something
+          'onQuicklistSelect': self.onQuicklistSelect,
         },
       }))
 
