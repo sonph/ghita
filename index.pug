@@ -86,6 +86,11 @@ html(lang='en')
       //- Main app
       #main
         h3 Keyboard
+        div
+          span.spacing
+          span(v-for='chord in current_keyboard_chords.list')
+            span.selectable {{ chord }}
+            span.spacing
         #Content
           #Keyboard
 

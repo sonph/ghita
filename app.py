@@ -359,6 +359,11 @@ class App(object):
     self.fretboard.showNotes(self.scale)
     self.quicklist = QuickList()
 
+    # TODO: Refactor code. Prototype only.
+    self.current_keyboard_notes = __new__(Set())
+    # Because vue can only track changes to a property in an object.
+    self.current_keyboard_chords = {'list': []}  # type: Dict[str, List[str]]
+
   def start(self) -> None:
     console.log('python start()')
     self.initVue()
@@ -410,10 +415,18 @@ class App(object):
     keyboard = Interface.Keyboard()
 
     def keyDown(note):
+      console.log('keyDown note ' + note)
       synth.triggerAttack(note)
+      self.current_keyboard_notes.add(note)
+      self.current_keyboard_chords.list = Tonal.Detect.chord(
+          Array.js_from(self.current_keyboard_notes))
 
     def keyUp(note):
+      console.log('keyUp note ' + note)
       synth.triggerRelease(note)
+      self.current_keyboard_notes.delete(note)
+      self.current_keyboard_chords.list = Tonal.Detect.chord(
+          Array.js_from(self.current_keyboard_notes))
 
     keyboard.keyDown = keyDown
     keyboard.keyUp = keyUp
@@ -432,6 +445,7 @@ class App(object):
           'fretboard': self.fretboard,
           'config': self.config,
           'quicklist': self.quicklist,
+          'current_keyboard_chords': self.current_keyboard_chords,
           'Tonal': Tonal,
           'VUE_CONSTANTS': constants.VUE_CONSTANTS,
         },
