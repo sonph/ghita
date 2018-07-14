@@ -17,6 +17,13 @@ html(lang='en')
     script(type='text/javascript' src='./__javascript__/app.js')
     //- (#15) Workaround.
     script(type='text/javascript' src='./app.min.js')
+
+    script(src="./assets/js/Tone.js")
+
+    //- For keyboard interface
+    script(src="./assets/js/jquery.min.js")
+    script(src="./assets/js/Interface.js")
+    script(src="./assets/js/Keyboard.js")
   body
     #app
       //- Quicklist
@@ -78,6 +85,10 @@ html(lang='en')
 
       //- Main app
       #main
+        h3 Keyboard
+        #Content
+          #Keyboard
+
         h3 Fretboard
         #fretboard
           table(v-bind:class='{ ' +

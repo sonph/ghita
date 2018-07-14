@@ -7,7 +7,8 @@ import utils
 
 __pragma__('skip')
 # Hack to ignore static check errors on objects included at runtime.
-__pragma__ = Tonal = window = console = Set = Vue = __new__ = object()  # type: Any
+__pragma__ = window = console = __new__ = object()  # type: Any
+Tone = Tonal = Set = Vue = object()
 __pragma__('noskip')
 
 class Note:
@@ -361,6 +362,7 @@ class App(object):
   def start(self) -> None:
     console.log('python start()')
     self.initVue()
+    self.initKeyboard()
 
   def onChangeOptionSimpleChords(self):
     console.log('Simple chords: ' + self.config.simple_chords)
@@ -381,6 +383,41 @@ class App(object):
     elif col[0] == 'chord':
       self.chord.setRootAndChord(col[1], col[2])
       self.fretboard.showNotes(self.chord)
+
+
+  def initKeyboard(self):
+    max_num_voices = 6
+    synth = __new__(Tone.PolySynth(max_num_voices, Tone.Synth));
+
+    synth.set({
+      # "oscillator" : {
+      #   "type" : "amtriangle",
+      #   "harmonicity" : 0.5,
+      #   "modulationType" : "sine"
+      # },
+      "envelope" : {
+        # "attackCurve" : 'exponential',
+        "attack" : 0.005,
+        "decay" : 0.05,
+        "sustain" : 1.0,
+        "release" : 1,
+      },
+      "portamento" : 0.05
+    })
+
+    synth.toMaster()
+
+    keyboard = Interface.Keyboard()
+
+    def keyDown(note):
+      synth.triggerAttack(note)
+
+    def keyUp(note):
+      synth.triggerRelease(note)
+
+    keyboard.keyDown = keyDown
+    keyboard.keyUp = keyUp
+    window.keyboard = keyboard
 
 
   def initVue(self) -> None:
