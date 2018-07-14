@@ -24,17 +24,25 @@ html(lang='en')
         div.right Quick access list
         ul
           li(v-for='(col, index) in quicklist.collections')
-            span.clickable(
+            //- Natural numbers start from 1 for non-programmers.
+            span {{ index + 1 }}
+            span.spacing
+            //- `alternate` class for chord color. Should refactor.
+            span.selectable.clickable(
+                v-on:click='onQuicklistSelect(index)'
+                v-bind:class='{ ' +
+                    'selected: (chord.root.note == col[1] && chord.chord == col[2]) || ' +
+                        '(scale.root.note == col[1] && scale.scale == col[2]), ' +
+                    'alternate: chord.root.note == col[1] && chord.chord == col[2], ' +
+                    ' }'
+            ) {{ quicklist.displayStr(col) }}
+            span.spacing
+            span.selectable.clickable(
                 v-on:click='quicklist.remove(index)'
                 v-bind:title='"Remove " + col[0]'
-            ) X
-            //- TODO: Should move this v-on:click into a function. This is a quick fix.
-            span.clickable(
-                v-on:click='if (col[0] == "scale") {' +
-                    'scale.setRootAndScale(col[1], col[2]); fretboard.showNotes(scale); } else {' +
-                    'chord.setRootAndChord(col[1], col[2]); fretboard.showNotes(chord); }'
-            )  {{ quicklist.displayStr(col) }}
-          span.clickable(
+            ) (rm)
+
+          span.right.selectable.clickable(
               v-on:click='quicklist.clearAll()'
               title="Clear list") clear
 
