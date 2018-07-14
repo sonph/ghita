@@ -9,6 +9,8 @@ body {
   padding: 2em;
 }
 
+/* Basically means the element can be `selected` (enabled/highlighted) or
+not. */
 .selectable {
   color: #ddd;
 }
@@ -21,8 +23,11 @@ body {
   color: #03DAC6;
 }
 
+/* Elements that have hover/click bindings. */
 .clickable:hover {
   color: #999;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 #selector table td {
@@ -112,4 +117,8 @@ body {
 
 #quicklist .right {
   text-align: right;
+}
+
+span.spacing:before {
+  content: "\00a0 \00a0 ";
 }
