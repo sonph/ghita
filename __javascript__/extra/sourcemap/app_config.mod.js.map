@@ -1,0 +1,11 @@
+{
+	"version": 3,
+	"file": "/Users/sp/code/ghita/__javascript__/app_config.mod.js",
+	"sources": [
+		"/Users/sp/code/ghita/app_config.py"
+	],
+	"sourcesContent": [
+		"class AppConfig:\n  def __init__(self):\n    # If true, show simple constants.CHORDS only.\n    # Otherwise show all available chords in Tonal.\n    self.simple_chords = True  # type: bool\n\n    # If true, settings panel is visible\n    self.open_settings = False  # type: bool\n\n    # If true, readme panel is visible\n    self.open_readme = False  # type: bool\n\n    # Selected instrument. 'guitar' or 'ukulele'\n    self.instrument = 'guitar'  # type: str\n\n  def toggleSettings(self):\n    self.open_settings = not self.open_settings\n\n  def toggleReadme(self):\n    self.open_readme = not self.open_readme"
+	],
+	"mappings": "AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AACA;AAGA;AAGA;AAGA;AAGA;AAAA;AAEA;AACA;AAAA;AAEA;AACA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA"
+}

@@ -1,0 +1,11 @@
+{
+	"version": 3,
+	"file": "/Users/sp/code/ghita/__javascript__/constants.mod.js",
+	"sources": [
+		"/Users/sp/code/ghita/constants.py"
+	],
+	"sourcesContent": [
+		"from typing import Any\nimport utils\n\n__pragma__('skip')\n# Hack to ignore static check errors on objects included at runtime.\n__pragma__ = __new__ = Set = object()  # type: Any\n__pragma__('noskip')\n\nNOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']\nNOTES_SET = __new__(Set(NOTES))\n\nSCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',\n    'locrian', 'blues', 'major pentatonic', 'minor pentatonic',\n    'harmonic minor', 'melodic minor']\nSCALES_SET = __new__(Set(SCALES))\n\n# TODO(#24): This is also used to check for \"simple chords\", so the names have\n# to be exactly as appear in names(aliases=False), since Scale.chords returns\n# canonical chord names. We need some way to check for aliases.\nCHORDS = [\n    'M',  # major\n    'm',  # minor\n    '7',  # 7\n    'm7',  # minor7\n    'Maj7',  # maj7\n    'Madd9', # major add9\n    'Maj9', # major9\n    'o',  # dim\n    'o7',  # dim7\n    # 'aug', \n    'Msus2',  # sus2\n    'Msus4',  # sus4\n]\nCHORDS_SET = __new__(Set(CHORDS))\n\nGUITAR = {\n  'FRETS': 23,  # +1 for open fret\n  'OPEN_NOTES': ['E', 'B', 'G', 'D', 'A', 'E'],\n  'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 9, 12, 15, 17, 19]))\n}\n\nUKULELE = {\n  'FRETS': 13,  # +1 for open fret\n  'OPEN_NOTES': ['A', 'E', 'C', 'G'],\n  'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 10, 12]))\n}\n\nINSTRUMENTS = [\n  {'value': 'guitar',\n  'text': 'Guitar (EADGBE)'},\n  {'value': 'ukulele',\n  'text': 'Ukulele (GCEA)'},\n]\n\nVUE_CONSTANTS = {\n  'NOTES': NOTES,\n  'NOTES_SET': NOTES_SET,\n  'SCALES': SCALES,\n  'SCALES_SET': SCALES_SET,\n  'SCALE_SELECTORS': utils.transpose([NOTES, SCALES, CHORDS]),\n  'INSTRUMENTS': INSTRUMENTS,\n}\n\n\n"
+	],
+	"mappings": "AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AA2DA;AA3DA;AAAA;AACA;AAOA;AACA;AAEA;AAGA;AAKA;AAcA;AAKA;AAMA;AAGA;AAYA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA"
+}

@@ -1,0 +1,11 @@
+{
+	"version": 3,
+	"file": "/Users/sp/code/ghita/__javascript__/utils.mod.js",
+	"sources": [
+		"/Users/sp/code/ghita/utils.py"
+	],
+	"sourcesContent": [
+		"from typing import List, Any\n\ndef transpose(\n    arrays: List[List[Any]], fill: Any = None) -> List[List[Any]]:\n  \"\"\"Transpose a list of lists, for table display in Vue.\n\n  >>> transpose([['a', 'b'], [1, 2, 3]])\n  [['a', 1], ['b', 2], [None, 3]]\n  \"\"\"\n  # Can't use max(iterable) in transcrypt here.\n  longestLength = len(arrays[0])\n  for array in arrays:\n    if len(array) > longestLength:\n      longestLength = len(array)\n  ret = []  # type: List[List[Any]]\n  for i in range(longestLength):\n    ret.append([])\n    for array in arrays:\n      value = array[i] if i < len(array) else fill\n      ret[i].append(value)\n  return ret\n\n\ndef rotate(array: List[Any], num: int) -> List[Any]:\n  \"\"\"Shifts elements to the left, cycling to the back, returning a new array.\n\n  >>> rotate([1, 2, 3, 4, 5], 2)\n  [3, 4, 5, 1, 2]\n  \"\"\"\n  num = num % len(array)\n  return array[num:].concat(array[0:num])\n"
+	],
+	"mappings": "AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA;AAAA;AAAA;AAAA;AAQA;AACA;AAAA;AAAA;AACA;AACA;AAAA;AAAA;AACA;AACA;AACA;AACA;AAAA;AAAA;AACA;AACA;AAAA;AAAA;AACA;AAAA;AAGA;AAMA;AACA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA"
+}
