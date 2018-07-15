@@ -9,8 +9,8 @@
  *
  * @returns {Array.<Array.<any>>}
  */
-export function tranpose(arrays, fill=null) {
-  const longestLength = arrays[0].length;
+export function transpose(arrays, fill=null) {
+  let longestLength = arrays[0].length;
 
   arrays.forEach(function(array) {
     longestLength = Math.max(longestLength, array.length);

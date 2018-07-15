@@ -1,6 +1,7 @@
 import { transpose } from './utils';
 
 export const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+export const NOTES_SET = new Set(NOTES);
 
 export const SCALES = ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian',
     'locrian', 'blues', 'major pentatonic', 'minor pentatonic',
@@ -12,18 +13,18 @@ export const SCALES_SET = new Set(SCALES);
 //to be exactly as appear in names(aliases=False), since Scale.chords returns
 //canonical chord names. We need some way to check for aliases.
 export const CHORDS = [
-    'M',  # major
-    'm',  # minor
-    '7',  # 7
-    'm7',  # minor7
-    'Maj7',  # maj7
-    'Madd9', # major add9
-    'Maj9', # major9
-    'o',  # dim
-    'o7',  # dim7
-    # 'aug', 
-    'Msus2',  # sus2
-    'Msus4',  # sus4
+  'M',  // major
+  'm',  // minor
+  '7',  // 7
+  'm7',  // minor7
+  'Maj7',  // maj7
+  'Madd9', // major add9
+  'Maj9', // major9
+  'o',  // dim
+  'o7',  // dim7
+  // 'aug',
+  'Msus2',  // sus2
+  'Msus4', // sus4
 ];
 
 export const CHORDS_SET = new Set(CHORDS);
@@ -37,7 +38,7 @@ export const GUITAR = {
 export const UKULELE = {
   'FRETS': 13,  // +1 for open fret
   'OPEN_NOTES': ['A', 'E', 'C', 'G'],
-  'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 10, 12]))
+  'FRET_MARKERS': new Set([0, 3, 5, 7, 10, 12]),
 };
 
 export const INSTRUMENTS = [

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Fretboard />
+    <Fretboard v-bind:fretboard="fretboard"/>
     <Notes />
     <Selector />
     <Chords />
@@ -12,6 +12,8 @@ import Fretboard from './components/Fretboard';
   import Notes from './components/Notes';
   import Selector from './components/Selector';
   import Chords from './components/Chords';
+  import Store from './store';
+  const store = new Store();
 
   export default {
     name: 'app',
@@ -21,7 +23,12 @@ import Fretboard from './components/Fretboard';
       Selector,
       Chords,
     },
-  };
+    data: function() {
+      return {
+        fretboard: store.fretboard,
+      }
+    }
+  }
 </script>
 
 <style{{#sass}} lang="scss"{{/sass}}>
