@@ -1,27 +1,27 @@
 <template>
   <div id="app">
-		<Fretboard />
-		<Notes />
-		<Selector />
-		<Chords />
+    <Fretboard />
+    <Notes />
+    <Selector />
+    <Chords />
   </div>
 </template>
 
 <script>
 import Fretboard from './components/Fretboard';
-import Notes from './components/Notes';
-import Selector from './components/Selector';
-import Chords from './components/Chords';
+  import Notes from './components/Notes';
+  import Selector from './components/Selector';
+  import Chords from './components/Chords';
 
-export default {
-  name: 'app',
-	components: {
-		Fretboard,
-		Notes,
-		Selector,
-		Chords,
-	},
-};
+  export default {
+    name: 'app',
+    components: {
+      Fretboard,
+      Notes,
+      Selector,
+      Chords,
+    },
+  };
 </script>
 
 <style{{#sass}} lang="scss"{{/sass}}>

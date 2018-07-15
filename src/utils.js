@@ -1,7 +1,7 @@
 /**
  * Transpose a list of lists, for table display in Vue.
- * @params {Array.<any>} arrays
- * @params {any} fill
+ * @param {Array.<any>} arrays
+ * @param {any} fill
  *
  * @example
  * // returns [['a', 1], ['b', 2], [null, 3]]
@@ -24,9 +24,9 @@ export function tranpose(arrays, fill=null) {
       const value = i < array.length ? array[i] : fill;
       ret[i].push(value);
     });
-
-    return ret;
   }
+
+  return ret;
 }
 
 /**
@@ -36,6 +36,7 @@ export function tranpose(arrays, fill=null) {
  *
  * @example
  * // returns [3,4,5,1,2]
+ * rotate([1, 2, 3, 4, 5], 2)
  * @returns {Array.<any>}
  */
 export function rotate(array, num) {

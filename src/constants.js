@@ -29,13 +29,13 @@ export const CHORDS = [
 export const CHORDS_SET = new Set(CHORDS);
 
 export const GUITAR = {
-  'FRETS': 23,  # +1 for open fret
+  'FRETS': 23,  // +1 for open fret
   'OPEN_NOTES': ['E', 'B', 'G', 'D', 'A', 'E'],
   'FRET_MARKERS': new Set([0, 3, 5, 7, 9, 12, 15, 17, 19]),
 };
 
 export const UKULELE = {
-  'FRETS': 13,  # +1 for open fret
+  'FRETS': 13,  // +1 for open fret
   'OPEN_NOTES': ['A', 'E', 'C', 'G'],
   'FRET_MARKERS': __new__(Set([0, 3, 5, 7, 10, 12]))
 };
