@@ -1,13 +1,39 @@
 <template>
-  <h2> {{ title }}  </h2>
+  <div>
+    <h3>Chords in scale</h3>
+    <div id="scaleChords">
+      <table>
+        <tbody>
+          <tr>
+            <td class="selectable"
+                v-for="note in scale.allNotes"
+                v-bind:class="{ selected: note.selected }">{{ note.note }}
+            </td>
+          </tr>
+          <tr v-for="chordNames in scale.allChordsTranposed">
+            <td class="selectable clickable alternate"
+                v-for="(chordName, index) in chordNames"
+                v-bind:class="{ selected: chord.root.note == scale.allNotes[index].note && chord.chord == chordName }"
+                v-on:click="chord
+                .setRoot(scale.allNotes[index].note)
+                .setChord(chordName)">{{ chord_name }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <script>
+import * as Tonal from 'tonal';
+
 export default {
   name: 'Chords',
-  data() {
+  props: ['scale', 'chord'],
+  data: function() {
     return {
-      title: 'Chords in scale',
+      Tonal,
     };
   },
 };

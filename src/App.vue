@@ -1,11 +1,10 @@
 <template>
   <div id="app">
     <Fretboard v-bind:fretboard="fretboard"/>
-    <Notes />
-    <Selector />
-    <Chords />
-  </div>
-</template>
+    <Notes v-bind:scale="scale" v-bind:quicklist="quicklist"/>
+    <Selector v-bind:scale="scale" v-bind:fretboard="fretboard" v-bind:chord="chord"/>
+    <Chords v-bind:scale="scale" v-bind:chord="chord"/>
+  </div> </template>
 
 <script>
 import Fretboard from './components/Fretboard';
@@ -26,32 +25,47 @@ import Fretboard from './components/Fretboard';
     data: function() {
       return {
         fretboard: store.fretboard,
+        scale: store.scale,
+        config: store.config,
+        quicklist: store.quicklist,
+        chord: store.chord,
       }
-    }
+    },
   }
 </script>
 
 <style{{#sass}} lang="scss"{{/sass}}>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+@font-face {
+  font-family: 'LCD Solid';
+  src: url('../../assets/fonts/LCD_Solid.ttf') format('truetype');
 }
-h1, h2 {
-  font-weight: normal;
+
+body {
+  font-family: 'monospace';
+  font-size: 15px;
+  padding: 2em;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+/* Basically means the element can be `selected` (enabled/highlighted) or
+not. */
+.selectable {
+  color: #ddd;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.selectable.selected, .clickable.selected:hover {
+  color: #6200EE;
 }
-a {
-  color: #42b983;
+
+/* Rename to something else. We have highlight 1 for scale, and 2 for chord */
+.selectable.alternate.selected, .clickable.alternate.selected:hover {
+  color: #03DAC6;
 }
+
+/* Elements that have hover/click bindings. */
+.clickable:hover {
+  color: #999;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 </style>
