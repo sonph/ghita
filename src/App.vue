@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <QuickList v-bind:scale="scale" v-bind:quicklist="quicklist" />
     <Fretboard v-bind:fretboard="fretboard"/>
     <Notes v-bind:scale="scale" v-bind:quicklist="quicklist"/>
     <Selector v-bind:scale="scale" v-bind:fretboard="fretboard" v-bind:chord="chord"/>
@@ -11,6 +12,7 @@ import Fretboard from './components/Fretboard';
   import Notes from './components/Notes';
   import Selector from './components/Selector';
   import Chords from './components/Chords';
+  import QuickList from './components/QuickList';
   import Store from './store';
   const store = new Store();
 
@@ -21,6 +23,7 @@ import Fretboard from './components/Fretboard';
       Notes,
       Selector,
       Chords,
+      QuickList,
     },
     data: function() {
       return {
@@ -34,11 +37,10 @@ import Fretboard from './components/Fretboard';
   }
 </script>
 
-<style{{#sass}} lang="scss"{{/sass}}>
-
+<style lang="scss">
 @font-face {
   font-family: 'LCD Solid';
-  src: url('../../assets/fonts/LCD_Solid.ttf') format('truetype');
+  src: url('./assets/fonts/LCD_Solid.ttf') format('truetype');
 }
 
 body {
@@ -68,4 +70,11 @@ not. */
   text-decoration: underline;
 }
 
+.right {
+  text-align: right;
+}
+
+span.spacing:before {
+  content: "\00a0 \00a0 ";
+}
 </style>

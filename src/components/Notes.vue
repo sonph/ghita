@@ -65,14 +65,8 @@ export default {
 </script>
 
 <style lang="scss" scope>
-#notes td, #scaleChords td {
+td {
   padding-right: 1em;
   text-align: center;
-}
-
-#selector table td {
-  padding-left: 1em;
-  padding-right: 1em;
-  white-space: nowrap;
 }
 </style>

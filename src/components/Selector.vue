@@ -1,5 +1,5 @@
 <template>
-  <div id="selector">
+  <div>
     <h3>Selector</h3>
     <table>
       <tbody>
@@ -68,3 +68,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scope>
+
+table td {
+  padding-left: 1em;
+  padding-right: 1em;
+  white-space: nowrap;
+}
+
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Chords in scale</h3>
-    <div id="scaleChords">
+    <div>
       <table>
         <tbody>
           <tr>
@@ -16,7 +16,7 @@
                 v-bind:class="{ selected: chord.root.note == scale.allNotes[index].note && chord.chord == chordName }"
                 v-on:click="chord
                 .setRoot(scale.allNotes[index].note)
-                .setChord(chordName)">{{ chord_name }}
+                .setChord(chordName)">{{ chordName }}
             </td>
           </tr>
         </tbody>
@@ -38,3 +38,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scope>
+td {
+  padding-right: 1em;
+  text-align: center;
+}
+</style>
