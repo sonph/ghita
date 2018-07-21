@@ -14,7 +14,7 @@
             v-for="fret in string"
             v-bind:class="{ show: fret.note.selected, root: fret.note.interval_to_tonic == '1P', bluenote: fret.note.interval_to_tonic == '4A', fretmarker: fret.marker }">
           {{ fret.note.note }}
-            <sub class="interval">{{ fret.note.interval_to_tonic }}</sub>
+            <sub class="interval">{{ fret.note.intervalToTonic }}</sub>
         </td>
       </tr>
     </tbody>

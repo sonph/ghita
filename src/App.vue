@@ -2,7 +2,7 @@
   <div id="app">
     <QuickList v-bind:scale="scale" v-bind:quicklist="quicklist" />
     <Fretboard v-bind:fretboard="fretboard"/>
-    <Notes v-bind:scale="scale" v-bind:quicklist="quicklist"/>
+    <Notes v-bind:chord="chord" v-bind:scale="scale" v-bind:quicklist="quicklist"/>
     <Selector v-bind:scale="scale" v-bind:fretboard="fretboard" v-bind:chord="chord"/>
     <Chords v-bind:scale="scale" v-bind:chord="chord"/>
   </div> </template>
@@ -77,4 +77,6 @@ not. */
 span.spacing:before {
   content: "\00a0 \00a0 ";
 }
+
+
 </style>
