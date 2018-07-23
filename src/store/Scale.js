@@ -83,7 +83,7 @@ class Scale extends NotesCollection {
   }
 
   _getNotes() {
-    return Tonal.Scale.notes(`${this.root.note} {this.scale}`);
+    return Tonal.Scale.notes(`${this.root.note} ${this.scale}`);
   }
 }
 
