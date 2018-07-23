@@ -1,5 +1,5 @@
 <template>
-  <div id="notes">
+  <div>
     <h3> Notes </h3>
     <div>Scale
       <span class="spacing" />
@@ -65,7 +65,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style scoped>
 td {
   padding-right: 1em;
   text-align: center;

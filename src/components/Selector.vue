@@ -69,9 +69,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style scoped>
 
-table td {
+td {
   padding-left: 1em;
   padding-right: 1em;
   white-space: nowrap;

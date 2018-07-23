@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <QuickList v-bind:scale="scale" v-bind:quicklist="quicklist" />
-    <Fretboard v-bind:fretboard="fretboard"/>
-    <Notes v-bind:chord="chord" v-bind:scale="scale" v-bind:quicklist="quicklist"/>
-    <Selector v-bind:scale="scale" v-bind:fretboard="fretboard" v-bind:chord="chord"/>
-    <Chords v-bind:scale="scale" v-bind:chord="chord"/>
+    <QuickList v-bind="{ scale, quicklist, chord }" :handle-select="onQuicklistSelect"/>
+    <Settings v-bind="{ config }" />
+    <Fretboard v-bind="{ fretboard }"/>
+    <Notes v-bind="{ chord, scale, quicklist }" />
+    <Selector v-bind="{ scale, fretboard, chord }" />
+    <Chords v-bind="{ scale, chord } "/>
   </div> </template>
 
 <script>
@@ -13,6 +14,7 @@ import Fretboard from './components/Fretboard';
   import Selector from './components/Selector';
   import Chords from './components/Chords';
   import QuickList from './components/QuickList';
+  import Settings from './components/Settings';
   import Store from './store';
   const store = new Store();
 
@@ -24,6 +26,7 @@ import Fretboard from './components/Fretboard';
       Selector,
       Chords,
       QuickList,
+      Settings,
     },
     data: function() {
       return {
@@ -34,17 +37,31 @@ import Fretboard from './components/Fretboard';
         chord: store.chord,
       }
     },
+    watch: {
+      'config.simpleChords': function() {
+        console.log(`Simple chords: ${this.config.instrument}`);
+        this.scale.update();
+      },
+      'config.instrument': function() {
+        console.log(`Selected instrument: ${this.config.instrument}`);
+        this.fretboard.update();
+        this.fretboard.showNotes(this.scale);
+      },
+    },
+    methods: {
+      onQuicklistSelect: store.onQuicklistSelect,
+    },
   }
 </script>
 
-<style lang="scss">
+<style lang="css">
 @font-face {
   font-family: 'LCD Solid';
   src: url('./assets/fonts/LCD_Solid.ttf') format('truetype');
 }
 
 body {
-  font-family: 'monospace';
+  font-family: monospace;
   font-size: 15px;
   padding: 2em;
 }
@@ -77,6 +94,5 @@ not. */
 span.spacing:before {
   content: "\00a0 \00a0 ";
 }
-
 
 </style>

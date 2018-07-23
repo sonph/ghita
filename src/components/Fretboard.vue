@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id='fretboard'>
   <h3> Fretboard </h3>
   <table v-bind:class="tableClass">
     <tbody>
@@ -39,7 +39,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+
 table {
   border-spacing: 0px 3px;
   table-layout: fixed;
@@ -53,17 +54,17 @@ table.ukulele {
   width: 900px;
 }
 
-table td {
+td {
   border: none;
   text-align: center;
   white-space: nowrap;
 }
 
-table td.fretnumber {
+td.fretnumber {
   border: none;
 }
 
-table td.note {
+td.note {
   border-right: 1px solid #999;
   padding-top: 0.2em;
   padding-bottom: 0.2em;
@@ -71,36 +72,37 @@ table td.note {
   color: #fff;
 }
 
-table td sub.interval {
+td sub.interval {
   font-size: 0.6em;
   color: #888;
 }
 
-table td.note.fretmarker {
+.note.fretmarker {
   background-color: #f5f5f5;
   color: #f5f5f5;
 }
 
 /* Nut */
-table td.note:first-child {
+td.note:first-child {
   border-right: 3px solid #999;
 }
 
 /* Last fret */
-table td.note:last-child {
+td.note:last-child {
   border-right: none;
 }
 
-table td.note.root.show {
+td.note.root.show {
   color: #6200EE;
   font-weight: bold;
 }
 
-table td.note.bluenote.show {
+td.note.bluenote.show {
   color: #018786;
 }
 
-table td.note.show {
+td.note.show {
   color: #333;
 }
+
 </style>

@@ -13,4 +13,15 @@ export default class {
     this.fretboard.showNotes(this.scale);
     this.quicklist = new QuickList();
   }
+
+  onQuicklistSelect(index) {
+    const col = this.quicklist.collections[index];
+    if (col[0] === 'scale') {
+      this.scale.setRootAndScale(col[1], col[2]);
+      this.fretboard.showNotes(this.scale);
+    } else if (col[0] === 'chord') {
+      this.chord.setRootAndChord(col[1], col[2]);
+      this.fretboard.showNotes(this.chord);
+    }
+  }
 };

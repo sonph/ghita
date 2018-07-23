@@ -1,14 +1,13 @@
 <template>
-  <div id="quicklist" v-if="!quicklist.visible">
+  <div id="quicklist" v-if="quicklist.visible">
     <div class="right">Quick access list</div>
     <ul>
       <li v-for="(col, index) in quicklist.collections">
         <span>{{ index + 1 }}</span>
-        <span class="spacing" />
-
+        <span class="spacing" /> 
           <span class="selectable clickable"
-                v-on:click="onQuicklistSelect(index)"
-                v-bind:class="{ selected: (chord.root.note == col[1] && chord.chord == col[2]) || (scale.root.note == col[1] && scale.scale == col[2]), alternate: chord.root.note == col[1] && chord.chord == col[2] }">{{ quicklist.displayStr(col) }}
+                @click="handleSelect(index)"
+                :class="{ selected: (chord.root.note == col[1] && chord.chord == col[2]) || (scale.root.note == col[1] && scale.scale == col[2]), alternate: chord.root.note == col[1] && chord.chord == col[2] }">{{ quicklist.displayStr(col) }}
           </span>
           <span class="spacing" />
 
@@ -28,11 +27,11 @@
 <script>
 export default {
   name: 'quicklist',
-  props: ['quicklist', 'scale'],
+  props: ['quicklist', 'scale', 'chord', 'handleSelect'],
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="css" scoped>
 
 #quicklist {
   position: fixed;
