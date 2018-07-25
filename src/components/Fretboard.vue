@@ -1,24 +1,24 @@
 <template>
   <div id='fretboard'>
-  <h3> Fretboard </h3>
-  <table v-bind:class="tableClass">
-    <tbody>
-      <tr>
-        <td class="fretnumber"
-            v-for="fret in fretboard.frets[0]">
-          <span v-if="fret.marker">{{ fret.fretNumber }}</span>
-        </td>
-      </tr>
-      <tr v-for="string in fretboard.frets">
-        <td class="note"
-            v-for="fret in string"
-            v-bind:class="{ show: fret.note.selected, root: fret.note.interval_to_tonic == '1P', bluenote: fret.note.interval_to_tonic == '4A', fretmarker: fret.marker }">
-          {{ fret.note.note }}
+    <h3> Fretboard </h3>
+    <table v-bind:class="tableClass">
+      <tbody>
+        <tr>
+          <td class="fretnumber"
+              v-for="fret in fretboard.frets[0]">
+            <span v-if="fret.marker">{{ fret.fretNumber }}</span>
+          </td>
+        </tr>
+        <tr v-for="string in fretboard.frets">
+          <td class="note"
+              v-for="fret in string"
+              v-bind:class="{ show: fret.note.selected, root: fret.note.intervalToTonic === '1P', bluenote: fret.note.intervalToTonic === '4A', fretmarker: fret.marker }">
+            {{ fret.note.note }}
             <sub class="interval">{{ fret.note.intervalToTonic }}</sub>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -28,14 +28,14 @@ export default {
   props: ['fretboard'],
   computed: {
     tableClass: function() {
-      const keys = ['guitar', 'ukulele'];
-      return keys.reduce((acc, key) => Object.assign({}, acc, {
-          [key]: this.fretboard.config.instrument === key,
-        }),
-        {},
-      );
+      const instrumentTypes = ['guitar', 'ukulele'];
+      const classes = {};
+      instrumentTypes.forEach((type) => {
+        classes[type] = this.fretboard.config.instrument === type;
+      });
+      return classes;
     },
-  }
+  },
 };
 </script>
 
@@ -46,10 +46,12 @@ table {
   table-layout: fixed;
 }
 
+/* TODO: merge this into constants.js */
 table.guitar {
   width: 1600px;
 }
 
+/* TODO: merge this into constants.js */
 table.ukulele {
   width: 900px;
 }

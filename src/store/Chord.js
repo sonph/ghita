@@ -3,17 +3,15 @@ import NotesCollection from './NotesCollection';
 import Note from './Note';
 import Config from './config';
 
-const TYPE = 'CHORD';
-
 class Chord extends NotesCollection {
   constructor(
-    config = new Config(),
+    config,
     root = new Note('C', '1P', true),
     chord = 'M',
   ) {
     super();
 
-    this.type = TYPE;
+    this.type = Chord.type;
     this.config = config;
     this.root = root;
     this.chord = chord;
@@ -56,5 +54,7 @@ class Chord extends NotesCollection {
     this.updateNotes();
   }
 }
+
+Chord.type = 'CHORD';
 
 export default Chord;

@@ -6,7 +6,8 @@
     <Notes v-bind="{ chord, scale, quicklist }" />
     <Selector v-bind="{ scale, fretboard, chord }" />
     <Chords v-bind="{ scale, chord } "/>
-  </div> </template>
+  </div>
+</template>
 
 <script>
 import Fretboard from './components/Fretboard';
@@ -39,7 +40,7 @@ import Fretboard from './components/Fretboard';
     },
     watch: {
       'config.simpleChords': function() {
-        console.log(`Simple chords: ${this.config.instrument}`);
+        console.log(`Simple chords: ${this.config.simpleChords}`);
         this.scale.update();
       },
       'config.instrument': function() {
@@ -55,11 +56,6 @@ import Fretboard from './components/Fretboard';
 </script>
 
 <style lang="css">
-@font-face {
-  font-family: 'LCD Solid';
-  src: url('./assets/fonts/LCD_Solid.ttf') format('truetype');
-}
-
 body {
   font-family: monospace;
   font-size: 15px;

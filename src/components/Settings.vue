@@ -26,7 +26,7 @@
                v-bind:value='instrument.value'
                />
             <label v-bind:for='"instrumentSelect" + instrument.value'>
-              | {{ instrument.text }}
+              {{ instrument.text }}
             </label>
           </div>
         </fieldset>

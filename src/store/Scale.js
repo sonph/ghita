@@ -87,6 +87,6 @@ class Scale extends NotesCollection {
   }
 }
 
-Scale.type = 'Scale';
+Scale.type = 'SCALE';
 
 export default Scale;
