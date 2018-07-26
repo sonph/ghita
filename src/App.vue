@@ -60,6 +60,17 @@ body {
   font-family: monospace;
   font-size: 15px;
   padding: 2em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+body::selection {
+  background: transparent;
+}
+
+body::moz-selection {
+  background: transparent;
 }
 
 /* Basically means the element can be `selected` (enabled/highlighted) or
