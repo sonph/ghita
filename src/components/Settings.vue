@@ -29,6 +29,11 @@
       </div>
 
     </div>
+
+    <div v-if="config.openReadme">
+      <h3>Readme</h3>
+      <div>TODO: add instructions here</div>
+    </div>
   </div>
 </template>
 
