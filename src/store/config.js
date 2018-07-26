@@ -1,13 +1,13 @@
 export default class {
   constructor() {
     this.simpleChords = true;
-    this.openSettings = false;
+    this.openOptions = false;
     this.openReadme = false;
     this.instrument = 'guitar';
   }
 
-  toggleSettings() {
-    this.openSettings = !this.openSettings;
+  toggleOptions() {
+    this.openOptions = !this.openOptions;
   }
 
   toggleReadme() {

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <span class="selectable clickable" v-on:click='config.toggleSettings()'>Settings</span>
+    <span class="selectable clickable" v-on:click='config.toggleOptions()'>Options</span>
     <span class="spacing"></span>
     <span class="selectable clickable" v-on:click="config.toggleReadme()">Readme</span>
 
-    <div v-if="config.openSettings">
-      <h3> Options </h3>
+    <div v-if="config.openOptions">
+      <h3>Options</h3>
       <div>
         <input type="checkbox" v-model="config.simpleChords" />
         <label for="checkbox"> Show simple chords only </label>
