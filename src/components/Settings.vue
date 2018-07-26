@@ -13,7 +13,7 @@
 
       <div>
         <fieldset>
-          Legend Instrument
+          <legend>Instrument</legend>
           <div v-for="instrument in VUE_CONSTANTS.INSTRUMENTS">
             <input
                type="radio"
