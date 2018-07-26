@@ -50,7 +50,7 @@ class Fretboard {
         const currentFret = this.frets[string][fret];
         const index = notesStr.indexOf(currentFret.note.note);
         if (index !== -1) {
-          currentFret.note.select().interval(
+          currentFret.note.select(true).interval(
             notesCollection.notes[index].intervalToTonic
           );
           this.shownFrets.push(currentFret);
