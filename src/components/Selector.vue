@@ -75,6 +75,7 @@ td {
   padding-left: 1em;
   padding-right: 1em;
   white-space: nowrap;
+  text-align: left;
 }
 
 </style>
