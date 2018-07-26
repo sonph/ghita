@@ -1,3 +1,4 @@
-*.html
 __javascript__/
 .mypy_cache/
+node_modules
+dist

@@ -7,14 +7,10 @@ Interactive comprehensive music theory assistance tool for guitarists.
 ### Setup
 
     brew install node
-    npm install -g pug-cli
-    python3 -m pip install transcrypt
+    npm install
 
 ### Dev environment
-
-    pug --watch *.pug -o ./
-    transcrypt --dstat --build --map --nomin app.py
-    python3 -m http.server
+    npm run dev
 
 ### References
 
