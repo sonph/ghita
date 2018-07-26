@@ -1,12 +1,8 @@
 <template>
   <div>
-    <span class="selectable clickable" v-on:click='config.toggleSettings()'>
-      Settings
-    </span>
-    <span class="spacing"> </span>
-    <span class="selectable" v-on:click="config.toggleReadme()">
-      Readme
-    </span>
+    <span class="selectable clickable" v-on:click='config.toggleSettings()'>Settings</span>
+    <span class="spacing"></span>
+    <span class="selectable clickable" v-on:click="config.toggleReadme()">Readme</span>
 
     <div v-if="config.openSettings">
       <h3> Options </h3>
