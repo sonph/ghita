@@ -1,15 +1,11 @@
 <template>
   <div>
-    <span class="selectable clickable" v-on:click='config.toggleSettings()'>
-      Settings
-    </span>
-    <span class="spacing"> </span>
-    <span class="selectable" v-on:click="config.toggleReadme()">
-      Readme
-    </span>
+    <span class="selectable clickable" v-on:click='config.toggleOptions()'>Options</span>
+    <span class="spacing"></span>
+    <span class="selectable clickable" v-on:click="config.toggleReadme()">Readme</span>
 
-    <div v-if="config.openSettings">
-      <h3> Options </h3>
+    <div v-if="config.openOptions">
+      <h3>Options</h3>
       <div>
         <input type="checkbox" v-model="config.simpleChords" />
         <label for="checkbox"> Show simple chords only </label>
@@ -17,7 +13,7 @@
 
       <div>
         <fieldset>
-          Legend Instrument
+          <legend>Instrument</legend>
           <div v-for="instrument in VUE_CONSTANTS.INSTRUMENTS">
             <input
                type="radio"
@@ -32,6 +28,11 @@
         </fieldset>
       </div>
 
+    </div>
+
+    <div v-if="config.openReadme">
+      <h3>Readme</h3>
+      <div>TODO: add instructions here</div>
     </div>
   </div>
 </template>

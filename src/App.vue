@@ -1,10 +1,15 @@
 <template>
   <div id="app">
     <QuickList v-bind="{ scale, quicklist, chord }" :handle-select="onQuicklistSelect"/>
+    <br>
     <Settings v-bind="{ config }" />
+    <br>
     <Fretboard v-bind="{ fretboard }"/>
+    <br>
     <Notes v-bind="{ chord, scale, quicklist }" />
+    <br>
     <Selector v-bind="{ scale, fretboard, chord }" />
+    <br>
     <Chords v-bind="{ scale, chord } "/>
   </div>
 </template>
