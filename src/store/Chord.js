@@ -53,6 +53,11 @@ class Chord extends NotesCollection {
   update() {
     this.updateNotes();
   }
+
+  setChordDbGuitar(chords) {
+    // See assets/chords/guitar.json for data format.
+    this.chordDbGuitar = chords;
+  }
 }
 
 Chord.type = 'CHORD';
